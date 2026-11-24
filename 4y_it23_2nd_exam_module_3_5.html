@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verbatim Exam Reviewer — Working Inside a Computer (Modules 3–5)</title>
+  <title>Working Inside a Computer — Verbatim Exam Reviewer (Modules 3–5)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
       color: #0F172A;
     }
 
-    /* Active Recall / Blur Mode */
+    /* Blur Recall Mode */
     body.recall-mode .recall-target {
       filter: blur(5px);
       background-color: #E2E8F0;
@@ -34,7 +34,7 @@
       cursor: pointer;
       transition: filter 0.2s ease, background-color 0.2s ease;
       user-select: none;
-      padding: 1px 5px;
+      padding: 0 4px;
     }
     body.recall-mode .recall-target:hover {
       filter: blur(2.5px);
@@ -45,7 +45,7 @@
       user-select: text;
     }
 
-    /* Search Highlight */
+    /* Highlight search matches */
     mark.search-hit {
       background-color: #FDE047;
       color: #0F172A;
@@ -53,68 +53,94 @@
       border-radius: 3px;
       font-weight: 600;
     }
+
+    /* Custom subtle scrollbars */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
   </style>
 </head>
 <body class="font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
 
-  <!-- Clean Top Sticky Header: Search, Module Tabs, and Blur Recall Toggle ONLY -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-2xs">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 space-y-3">
+  <!-- Sticky Top Bar: Search, Blur Recall & Category Filter Tabs -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 space-y-3">
       <!-- Top Row: Title, Search, Blur Recall -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div class="shrink-0">
-          <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Working Inside a Computer</h1>
-          <p class="text-xs text-slate-500">Modules 3, 4 &amp; 5 • Exact Verbatim Reviewer (Pages 1–51)</p>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-600 text-white tracking-wide">100% VERBATIM</span>
+            <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Working Inside a Computer</h1>
+          </div>
+          <p class="text-xs text-slate-500">Modules 3, 4 &amp; 5 • Exact Unparaphrased Exam Reviewer</p>
         </div>
 
-        <div class="flex items-center gap-2 flex-1 sm:max-w-md justify-end">
-          <!-- Search Bar -->
-          <div class="relative flex-1">
+        <div class="flex items-center gap-2 flex-1 sm:flex-initial justify-end min-w-[240px]">
+          <!-- Search Input -->
+          <div class="relative flex-1 sm:w-72">
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.3-4.3"/></svg>
             </div>
-            <input id="searchInput" type="search" placeholder="Search exact terms, rails, commands..." class="w-full pl-9 pr-14 py-2 text-xs sm:text-sm bg-slate-100/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+            <input id="searchInput" type="search" placeholder="Search exact terms, rails, steps..." class="w-full pl-9 pr-14 py-2 text-xs sm:text-sm bg-slate-100/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
             <span id="searchCount" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">0</span>
           </div>
 
           <!-- Blur Recall Toggle -->
-          <button id="toggleRecallBtn" type="button" title="Blur exact definitions and tap them to reveal" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition shrink-0">
+          <button id="toggleRecallBtn" type="button" title="Blur exact definitions so you can tap to reveal" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition shrink-0">
             <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
             <span>Blur Recall</span>
           </button>
         </div>
       </div>
 
-      <!-- Module Filter Tabs -->
-      <nav class="flex items-center gap-1.5 overflow-x-auto pb-0.5" aria-label="Module sections">
-        <button data-mod-filter="all" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shrink-0 transition">All</button>
-        <button data-mod-filter="overview" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Overview &amp; Safety</button>
-        <button data-mod-filter="mod3" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 3</button>
-        <button data-mod-filter="mod4" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 4</button>
-        <button data-mod-filter="mod5" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 5</button>
-        <button data-mod-filter="end" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Capstone &amp; Glossary</button>
-      </nav>
+      <!-- Bottom Row: Module Filter Tabs + Dedicated Steps & Tables Categories -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+        <button data-mod-filter="all" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white shrink-0 transition">All</button>
+        <button data-mod-filter="overview" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Overview &amp; Safety</button>
+        <button data-mod-filter="mod3" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 3</button>
+        <button data-mod-filter="mod4" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 4</button>
+        <button data-mod-filter="mod5" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 5</button>
+        <button data-mod-filter="end" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Capstone &amp; Glossary</button>
+        <span class="h-4 w-px bg-slate-200 mx-1 shrink-0"></span>
+        <button data-mod-filter="steps" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 shrink-0 transition">Steps &amp; Procedures</button>
+        <button data-mod-filter="tables" class="mod-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100 shrink-0 transition">Tables</button>
+      </div>
     </div>
   </header>
 
-  <!-- Clean Single-Column Reader -->
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-    <!-- Subtle Helper Note -->
-    <div id="recallNotice" class="hidden mb-6 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs sm:text-sm text-amber-950 flex items-center justify-between gap-3">
-      <span><strong>Blur Recall Active:</strong> Key definitions, tolerances, and descriptions are blurred. Click any blurred phrase to reveal or re-hide it.</span>
-      <button id="revealAllBtn" type="button" class="text-xs font-bold text-amber-800 underline shrink-0">Reveal All</button>
-    </div>
+  <!-- Clean Single-Column Main Reviewer Feed -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
 
-    <!-- All Verbatim Sections -->
+    <!-- Verbatim Reviewer Content Injected Here -->
     <div id="verbatimContentRoot" class="space-y-8"></div>
 
     <!-- Empty Search State -->
     <div id="noSearchResults" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200 p-6">
-      <p class="text-base font-bold text-slate-800 mb-1">No matching text found</p>
-      <p class="text-sm text-slate-500 mb-4">Try clearing your search or switching the tab back to "All".</p>
-      <button id="clearSearchBtn" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs sm:text-sm font-semibold hover:bg-indigo-700">Reset Filter</button>
+      <p class="text-lg font-bold text-slate-800 mb-1">No exact matches found</p>
+      <p class="text-sm text-slate-500 mb-4">Try clearing your search or switching back to "All".</p>
+      <button id="clearSearchBtn" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Clear Search</button>
     </div>
+
   </main>
+
+  <!-- Subtle Toast Notification -->
+  <div id="toastBox" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      <span id="toastText">Copied!</span>
+    </div>
+  </div>
 
   <script>
     // =========================================================================
@@ -286,11 +312,8 @@
         title: "3.1 Assembly procedure (recommended order) & Instructor tip",
         blocks: [
           {
-            type: "subheading",
-            text: "Assembly procedure (recommended order)"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Assembly procedure (recommended order)",
             items: [
               "Prepare the case. Remove side panels. Check which standoffs are installed and match them to the motherboard's mounting holes. Set the I/O shield if the board does not have it built in.",
               "Install the CPU on the motherboard (easier outside the case). Lift the retention lever, align the CPU's corner marker with the socket's marker, lower it gently, and close the lever. Never touch the pins or contact pads.",
@@ -325,11 +348,8 @@
         title: "3.1 Disassembly procedure, Common mistakes & Activity 3.1",
         blocks: [
           {
-            type: "subheading",
-            text: "Disassembly procedure"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Disassembly procedure",
             items: [
               "Shut down, unplug and discharge. Disconnect all external cables. Label or photograph what goes where.",
               "Put on the wrist strap. Remove side panels.",
@@ -367,7 +387,7 @@
               "3. Reassemble it following the procedure above, with one learner reading steps and the other performing them. Swap roles.",
               "4. Boot to BIOS/UEFI and confirm that all components are detected."
             ],
-            footer: "Assessment checklist: safety observed (strap, power off). correct order no forced parts tidy cables successful POST."
+            footer: "Assessment checklist: safety observed (strap, power off) • correct order • no forced parts • tidy cables • successful POST."
           }
         ]
       },
@@ -494,11 +514,8 @@
             text: "Unplug the system and do not power it on again until the cause is found. Never open the PSU case; replace the unit."
           },
           {
-            type: "subheading",
-            text: "Troubleshooting steps"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Troubleshooting steps",
             items: [
               "Check the basics. Is the outlet live? Is the power cable firmly seated? Is the PSU's rear switch set to ON (I)? Try a different cable, outlet or surge protector. Check the voltage selector (if present) matches local mains.",
               "Check internal connections. Confirm the 24-pin and CPU power connectors are fully seated, and the front-panel power switch lead is on the correct header pins.",
@@ -582,11 +599,8 @@
             text: "Electrical energy used by a processor becomes heat. If heat is not removed, temperatures rise until the chip protects itself by thermal throttling (reducing speed) or shutting down. Sustained high temperatures also shorten component life and cause instability, freezes and data corruption."
           },
           {
-            type: "subheading",
-            text: "How heat leaves the system"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "How heat leaves the system",
             items: [
               "Conduction: heat moves from the CPU die through the heat spreader (IHS), thermal paste, and the cooler's base plate.",
               "Heat transport: copper heat pipes (or liquid in a loop) carry heat to a larger surface.",
@@ -645,11 +659,8 @@
             ]
           },
           {
-            type: "subheading",
-            text: "Installing a CPU cooler (summary)"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Installing a CPU cooler (summary)",
             items: [
               "Clean the CPU's top surface with isopropyl alcohol if old paste is present.",
               "Apply a pea-sized dot of paste at the center (or use a pre-applied pad) and let the cooler's pressure spread it.",
@@ -929,11 +940,8 @@
             ]
           },
           {
-            type: "subheading",
-            text: "Installation steps"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Installation steps",
             items: [
               "Verify compatibility of the board with the case, CPU, RAM and PSU.",
               "Prepare the case. Place standoffs matching the board's holes (do not install extra standoffs in places without holes). Fit the I/O shield, pressing it into the opening until it clicks.",
@@ -970,11 +978,8 @@
             ]
           },
           {
-            type: "subheading",
-            text: "Updating firmware (BIOS/UEFI flash)"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Updating firmware (BIOS/UEFI flash)",
             items: [
               "Identify the exact board model and current firmware version.",
               "Download the update from the manufacturer's official website only, and read the release notes. Update only if it resolves an issue or adds needed support (e.g., a newer CPU).",
@@ -1090,11 +1095,8 @@
             ]
           },
           {
-            type: "subheading",
-            text: "The \"minimal boot\" and \"swap\" strategy"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "The \"minimal boot\" and \"swap\" strategy",
             items: [
               "Remove everything except the PSU, motherboard, CPU with cooler, and one RAM stick (and a graphics card if the CPU has no integrated graphics).",
               "Attempt to boot. If it posts, add components back one at a time, testing after each.",
@@ -1103,11 +1105,8 @@
             ]
           },
           {
-            type: "subheading",
-            text: "Clearing CMOS safely"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Clearing CMOS safely",
             items: [
               "Shut down, switch off the PSU and unplug the power cable.",
               "Use the CLR_CMOS button or jumper per the manual, or remove the coin cell battery for 1 to 5 minutes.",
@@ -1160,15 +1159,9 @@
             ]
           },
           {
-            type: "subheading",
-            text: "A structured troubleshooting method"
-          },
-          {
-            type: "paragraph",
-            text: "Good technicians do not guess; they follow a repeatable process, similar to the widely used industry model:"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "A structured troubleshooting method",
+            subtitle: "Good technicians do not guess; they follow a repeatable process, similar to the widely used industry model:",
             items: [
               "Identify the problem. Ask the user questions: What happened? When did it start? What changed recently (new software, update, hardware, power event)? Can the problem be reproduced? Back up important data before changes if possible.",
               "Establish a theory of probable cause. Start with the obvious and the simple (power, cables, settings) before the complex.",
@@ -1244,11 +1237,8 @@
             text: "Malware can mimic hardware or software faults: slow performance, unexplained network activity, pop-ups, disabled security tools, or unexpected high CPU use. Basic security principles including least privilege, regular patching, strong authentication and monitoring reduce these risks (Stamp, 2022). When symptoms are suspicious, scan the system with updated anti-malware tools (an offline scan may be needed), check running processes and startup items, and isolate the machine from the network if infection is suspected."
           },
           {
-            type: "subheading",
-            text: "Boot-stage diagnosis: where does it fail?"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Boot-stage diagnosis: where does it fail?",
             items: [
               "No power or POST: PSU, motherboard, CPU, RAM, power connections.",
               "POST completes but \"no boot device\": drive not detected, wrong boot order, corrupted boot loader.",
@@ -1476,11 +1466,8 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
         title: "Capstone Activity: Build, break, diagnose & Assessment Rubric",
         blocks: [
           {
-            type: "subheading",
-            text: "Capstone: Build, break, diagnose"
-          },
-          {
-            type: "numbered",
+            type: "steps",
+            title: "Capstone: Build, break, diagnose",
             items: [
               "Plan. Choose a purpose (office, school, or creative workstation). Select compatible components and justify the choice of motherboard form factor, PSU wattage and cooling.",
               "Build. Assemble the system using the procedure from Module 3 and configure UEFI per Module 4.",
@@ -1491,7 +1478,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
           },
           {
             type: "subheading",
-            text: "Rubric"
+            text: "Assessment Rubric"
           },
           {
             type: "table",
@@ -1513,7 +1500,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
         moduleBadge: "Review Questions",
         badgeColor: "purple",
         pageRef: "Pages 46–48",
-        title: "Review questions (1–14) — Click to reveal answers",
+        title: "Review questions (1–14) — Click to reveal exact answers",
         blocks: [
           {
             type: "review_qs",
@@ -1662,14 +1649,24 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
 
     let activeModFilter = "all";
 
+    function showToast(msg) {
+      const box = document.getElementById("toastBox");
+      document.getElementById("toastText").textContent = msg;
+      box.classList.remove("translate-y-20", "opacity-0");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        box.classList.add("translate-y-20", "opacity-0");
+      }, 2000);
+    }
+
     function getBadgeClasses(color) {
       const map = {
-        indigo: "bg-indigo-50 text-indigo-700 border-indigo-200",
-        emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        amber: "bg-amber-50 text-amber-800 border-amber-200",
-        rose: "bg-rose-50 text-rose-700 border-rose-200",
-        purple: "bg-purple-50 text-purple-700 border-purple-200",
-        slate: "bg-slate-100 text-slate-700 border-slate-200"
+        indigo: "bg-indigo-100 text-indigo-800 border-indigo-200",
+        emerald: "bg-emerald-100 text-emerald-800 border-emerald-200",
+        amber: "bg-amber-100 text-amber-800 border-amber-200",
+        rose: "bg-rose-100 text-rose-800 border-rose-200",
+        purple: "bg-purple-100 text-purple-800 border-purple-200",
+        slate: "bg-slate-200 text-slate-800 border-slate-300"
       };
       return map[color] || map.indigo;
     }
@@ -1684,13 +1681,13 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
 
     function renderBlock(block) {
       if (block.type === "paragraph") {
-        return `<p class="text-sm sm:text-[15px] text-slate-700 leading-relaxed">${escapeHTML(block.text)}</p>`;
+        return `<p class="text-sm sm:text-[15px] text-slate-700 leading-relaxed searchable-text">${escapeHTML(block.text)}</p>`;
       }
 
       if (block.type === "subheading") {
-        return `<h3 class="text-sm sm:text-base font-bold text-slate-900 pt-2 flex items-center gap-2">
-          <span class="w-1.5 h-4 rounded-full bg-indigo-500 inline-block shrink-0"></span>
-          <span>${escapeHTML(block.text)}</span>
+        return `<h3 class="text-sm sm:text-base font-bold text-slate-900 pt-2 flex items-center gap-2 searchable-text">
+          <span class="w-1.5 h-4 rounded-full bg-indigo-500 inline-block"></span>
+          ${escapeHTML(block.text)}
         </h3>`;
       }
 
@@ -1712,7 +1709,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
               contentHtml = `<strong class="text-slate-900">${head}</strong><span class="recall-target" title="Click to reveal">${tail}</span>`;
             }
           }
-          return `<li class="flex items-start gap-2.5 text-sm sm:text-[15px] text-slate-700 leading-relaxed">
+          return `<li class="flex items-start gap-2.5 text-sm sm:text-[15px] text-slate-700 leading-relaxed searchable-text">
             <span class="mt-2 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
             <span>${contentHtml}</span>
           </li>`;
@@ -1724,31 +1721,55 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
         const lis = block.items.map((item, i) => {
           const colonIdx = item.indexOf(":");
           let contentHtml = escapeHTML(item);
-          if (colonIdx > 0 && colonIdx < 45) {
+          if (colonIdx > 0 && colonIdx < 40) {
             contentHtml = `<strong class="text-slate-900">${escapeHTML(item.slice(0, colonIdx + 1))}</strong><span class="recall-target" title="Click to reveal">${escapeHTML(item.slice(colonIdx + 1))}</span>`;
           }
-          return `<li class="flex items-start gap-3 text-sm sm:text-[15px] text-slate-700 leading-relaxed">
-            <span class="mt-0.5 w-6 h-6 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">${i + 1}</span>
+          return `<li class="flex items-start gap-3 text-sm sm:text-[15px] text-slate-700 leading-relaxed searchable-text">
+            <span class="mt-0.5 w-6 h-6 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">${i + 1}.</span>
             <span>${contentHtml}</span>
           </li>`;
         }).join("");
         return `<ol class="space-y-2.5">${lis}</ol>`;
       }
 
+      if (block.type === "steps") {
+        const sub = block.subtitle ? `<p class="text-xs sm:text-sm text-slate-600 mb-3 searchable-text">${escapeHTML(block.subtitle)}</p>` : "";
+        const itemsHtml = block.items.map((item, idx) => {
+          const dotIdx = item.indexOf(".");
+          let textHtml = escapeHTML(item);
+          if (dotIdx > 0 && dotIdx < 65) {
+            textHtml = `<strong class="text-slate-900">${escapeHTML(item.slice(0, dotIdx + 1))}</strong><span class="recall-target" title="Click to reveal">${escapeHTML(item.slice(dotIdx + 1))}</span>`;
+          }
+          return `<li class="flex items-start gap-3 p-3 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span class="mt-0.5 min-w-[2.1rem] h-6 px-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}.</span>
+            <div class="text-sm sm:text-[15px] leading-relaxed text-slate-800 searchable-text">${textHtml}</div>
+          </li>`;
+        }).join("");
+
+        return `<div class="block-steps rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 space-y-2.5">
+          <div class="flex items-center justify-between gap-2 pb-1">
+            <h4 class="text-sm sm:text-base font-bold text-slate-900 searchable-text">${escapeHTML(block.title)}</h4>
+            <span class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">Steps (${block.items.length})</span>
+          </div>
+          ${sub}
+          <ol class="space-y-2">${itemsHtml}</ol>
+        </div>`;
+      }
+
       if (block.type === "table") {
-        const ths = block.headers.map(h => `<th class="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100/90 border-b border-slate-200">${escapeHTML(h)}</th>`).join("");
+        const ths = block.headers.map(h => `<th class="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100/90 border-b border-slate-200 searchable-text">${escapeHTML(h)}</th>`).join("");
         const trs = block.rows.map(row => {
           const tds = row.map((cell, cIdx) => {
             const isBlur = block.blurCol === cIdx;
             const inner = isBlur
               ? `<span class="recall-target" title="Click to reveal exact definition">${escapeHTML(cell)}</span>`
               : escapeHTML(cell);
-            return `<td class="px-3.5 py-2.5 text-xs sm:text-sm text-slate-700 border-b border-slate-100 align-top leading-relaxed ${cIdx === 0 ? "font-semibold text-slate-900" : ""}">${inner}</td>`;
+            return `<td class="px-3.5 py-2.5 text-xs sm:text-sm text-slate-700 border-b border-slate-100 align-top leading-relaxed ${cIdx === 0 ? "font-semibold text-slate-900" : ""} searchable-text">${inner}</td>`;
           }).join("");
-          return `<tr class="hover:bg-slate-50/80 transition">${tds}</tr>`;
+          return `<tr class="hover:bg-indigo-50/30 transition">${tds}</tr>`;
         }).join("");
 
-        return `<div class="overflow-x-auto rounded-2xl border border-slate-200">
+        return `<div class="block-table overflow-x-auto rounded-2xl border border-slate-200 shadow-2xs">
           <table class="min-w-full divide-y divide-slate-200 bg-white">
             <thead><tr>${ths}</tr></thead>
             <tbody class="divide-y divide-slate-100">${trs}</tbody>
@@ -1758,9 +1779,9 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
 
       if (block.type === "callout") {
         const styles = {
-          indigo: "bg-indigo-50/70 border-indigo-200 text-indigo-950",
-          amber: "bg-amber-50/80 border-amber-200 text-amber-950",
-          rose: "bg-rose-50/80 border-rose-200 text-rose-950"
+          indigo: "bg-indigo-50/80 border-indigo-200 text-indigo-950",
+          amber: "bg-amber-50/90 border-amber-200 text-amber-950",
+          rose: "bg-rose-50/90 border-rose-200 text-rose-950"
         };
         const titleColors = {
           indigo: "text-indigo-800",
@@ -1768,54 +1789,58 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
           rose: "text-rose-800"
         };
         return `<div class="rounded-2xl border p-4 ${styles[block.variant] || styles.indigo}">
-          <p class="text-xs sm:text-sm font-extrabold uppercase tracking-wide mb-1 ${titleColors[block.variant] || titleColors.indigo}">${escapeHTML(block.title)}</p>
-          <p class="text-xs sm:text-sm leading-relaxed">${escapeHTML(block.text)}</p>
+          <p class="text-xs sm:text-sm font-extrabold uppercase tracking-wide mb-1 ${titleColors[block.variant] || titleColors.indigo} searchable-text">${escapeHTML(block.title)}</p>
+          <p class="text-xs sm:text-sm leading-relaxed searchable-text">${escapeHTML(block.text)}</p>
         </div>`;
       }
 
       if (block.type === "twocol") {
-        const leftLis = block.leftItems.map(i => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700"><span class="text-emerald-600 font-bold">•</span><span>${escapeHTML(i)}</span></li>`).join("");
-        const rightLis = block.rightItems.map(i => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700"><span class="text-indigo-600 font-bold">•</span><span>${escapeHTML(i)}</span></li>`).join("");
+        const leftLis = block.leftItems.map(i => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700 searchable-text"><span class="text-emerald-600 font-bold">•</span><span>${escapeHTML(i)}</span></li>`).join("");
+        const rightLis = block.rightItems.map(i => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700 searchable-text"><span class="text-indigo-600 font-bold">•</span><span>${escapeHTML(i)}</span></li>`).join("");
         return `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-4">
-            <h4 class="text-sm font-bold text-emerald-900 mb-2">${escapeHTML(block.leftTitle)}</h4>
+            <h4 class="text-sm font-bold text-emerald-900 mb-2 searchable-text">${escapeHTML(block.leftTitle)}</h4>
             <ul class="space-y-1.5">${leftLis}</ul>
           </div>
           <div class="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-4">
-            <h4 class="text-sm font-bold text-indigo-900 mb-2">${escapeHTML(block.rightTitle)}</h4>
+            <h4 class="text-sm font-bold text-indigo-900 mb-2 searchable-text">${escapeHTML(block.rightTitle)}</h4>
             <ul class="space-y-1.5">${rightLis}</ul>
           </div>
         </div>`;
       }
 
       if (block.type === "code") {
-        return `<div class="rounded-2xl bg-slate-900 text-slate-100 p-4 overflow-x-auto border border-slate-800">
-          <pre class="font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre">${escapeHTML(block.code)}</pre>
+        return `<div class="relative rounded-2xl bg-slate-900 text-slate-100 p-4 overflow-x-auto border border-slate-800">
+          <button type="button" class="copy-code-btn absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-300 border border-slate-700">Copy</button>
+          <pre class="font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre searchable-text">${escapeHTML(block.code)}</pre>
         </div>`;
       }
 
       if (block.type === "activity") {
-        const items = block.items.map(i => `<p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${escapeHTML(i)}</p>`).join("");
-        const foot = block.footer ? `<p class="mt-2 pt-2 border-t border-purple-200/80 text-xs font-semibold text-purple-900">${escapeHTML(block.footer)}</p>` : "";
-        return `<div class="rounded-2xl border border-purple-200 bg-purple-50/40 p-4 sm:p-5 space-y-1.5">
-          <h4 class="text-sm font-bold text-purple-950 mb-1">${escapeHTML(block.title)}</h4>
+        const items = block.items.map(i => `<p class="text-xs sm:text-sm text-slate-700 leading-relaxed searchable-text">${escapeHTML(i)}</p>`).join("");
+        const foot = block.footer ? `<p class="mt-2 pt-2 border-t border-purple-200/80 text-xs font-semibold text-purple-900 searchable-text">${escapeHTML(block.footer)}</p>` : "";
+        return `<div class="rounded-2xl border border-purple-200 bg-purple-50/50 p-4 sm:p-5 space-y-1.5">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded-md bg-purple-600 text-white text-[10px] font-bold uppercase tracking-wider">Lab Activity</span>
+            <h4 class="text-sm font-bold text-purple-950 searchable-text">${escapeHTML(block.title)}</h4>
+          </div>
           ${items}
           ${foot}
         </div>`;
       }
 
       if (block.type === "review_qs") {
-        const qs = block.items.map(item => `
+        const qs = block.items.map((item) => `
           <div class="rounded-2xl border border-slate-200 bg-slate-50/60 overflow-hidden">
             <button type="button" class="toggle-answer-btn w-full text-left p-4 flex items-start justify-between gap-3 hover:bg-white transition">
               <div class="space-y-1">
                 <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">${escapeHTML(item.mod)}</span>
-                <p class="text-sm sm:text-[15px] font-bold text-slate-900">${escapeHTML(item.q)}</p>
+                <p class="text-sm sm:text-[15px] font-bold text-slate-900 searchable-text">${escapeHTML(item.q)}</p>
               </div>
               <span class="shrink-0 px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs font-semibold">Show answer</span>
             </button>
-            <div class="review-answer hidden px-4 pb-4 pt-2.5 bg-emerald-50/70 border-t border-emerald-200/80 text-xs sm:text-sm text-emerald-950 leading-relaxed">
-              <strong class="text-emerald-800">Answer:</strong> <span class="recall-target" title="Click to reveal">${escapeHTML(item.a)}</span>
+            <div class="review-answer hidden px-4 pb-4 pt-2 bg-emerald-50/70 border-t border-emerald-200/80 text-xs sm:text-sm text-emerald-950 leading-relaxed searchable-text">
+              <strong class="text-emerald-800">Answer:</strong> ${escapeHTML(item.a)}
             </div>
           </div>
         `).join("");
@@ -1827,37 +1852,46 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
 
     function renderAllContent() {
       const root = document.getElementById("verbatimContentRoot");
-      root.innerHTML = STUDY_SECTIONS.map(sec => {
+      let html = "";
+
+      STUDY_SECTIONS.forEach(sec => {
+        const hasSteps = sec.blocks.some(b => b.type === "steps");
+        const hasTables = sec.blocks.some(b => b.type === "table");
         const blocksHtml = sec.blocks.map(renderBlock).join("\n");
-        return `
-          <article id="${sec.id}" data-module="${sec.module}" class="study-card rounded-3xl bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-7 space-y-5">
+
+        html += `
+          <article id="${sec.id}" data-module="${sec.module}" data-has-steps="${hasSteps}" data-has-tables="${hasTables}" class="study-card rounded-3xl bg-white border border-slate-200 shadow-xs p-5 sm:p-7 space-y-5">
             <div class="pb-3 border-b border-slate-100 space-y-1.5">
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold border ${getBadgeClasses(sec.badgeColor)}">${escapeHTML(sec.moduleBadge)}</span>
                 <span class="text-xs font-mono text-slate-400">${escapeHTML(sec.pageRef)}</span>
+                ${hasSteps ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Steps</span>` : ""}
+                ${hasTables ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-sky-50 text-sky-700 border border-sky-200">Table</span>` : ""}
               </div>
-              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">${escapeHTML(sec.title)}</h2>
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight searchable-text">${escapeHTML(sec.title)}</h2>
             </div>
 
             <div class="space-y-4">
               ${blocksHtml}
             </div>
           </article>`;
-      }).join("\n");
+      });
+
+      root.innerHTML = html;
     }
 
     // =========================================================================
-    // INTERACTIONS: BLUR RECALL, MODULE TABS, LIVE SEARCH, REVIEW Q ANSWERS
+    // INTERACTIVE EVENT LISTENERS
     // =========================================================================
     document.addEventListener("click", (e) => {
-      // Reveal individual blurred recall target
+      // Reveal blurred recall target
       const recallEl = e.target.closest(".recall-target");
       if (recallEl && document.body.classList.contains("recall-mode")) {
         recallEl.classList.toggle("revealed");
         return;
       }
 
-      // Toggle Review Question Answer
+      // Review Question Show/Hide Answer
       const ansBtn = e.target.closest(".toggle-answer-btn");
       if (ansBtn) {
         const ansBox = ansBtn.nextElementSibling;
@@ -1867,40 +1901,74 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
         badge.textContent = isHidden ? "Hide answer" : "Show answer";
         badge.classList.toggle("bg-indigo-600", !isHidden);
         badge.classList.toggle("bg-slate-700", isHidden);
+        return;
+      }
+
+      // Copy CLI code block using execCommand fallback
+      const copyBtn = e.target.closest(".copy-code-btn");
+      if (copyBtn) {
+        const codeText = copyBtn.nextElementSibling.textContent;
+        const ta = document.createElement("textarea");
+        ta.value = codeText;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast("Commands copied to clipboard!");
+        } catch (err) {
+          showToast("Unable to copy automatically");
+        }
+        document.body.removeChild(ta);
+        return;
       }
     });
 
-    // Blur Recall Toggle
+    // Blur Recall Mode Toggle
     document.getElementById("toggleRecallBtn").addEventListener("click", function () {
       document.body.classList.toggle("recall-mode");
       const active = document.body.classList.contains("recall-mode");
       document.querySelectorAll(".recall-target").forEach(el => el.classList.remove("revealed"));
       this.classList.toggle("bg-amber-100", active);
       this.classList.toggle("border-amber-400", active);
-      this.classList.toggle("text-amber-900", active);
-      document.getElementById("recallNotice").classList.toggle("hidden", !active);
+      showToast(active ? "Blur Recall ON — tap blurred text to reveal" : "Blur Recall OFF");
     });
 
-    // Reveal All button inside notice
-    document.getElementById("revealAllBtn").addEventListener("click", () => {
-      document.querySelectorAll(".recall-target").forEach(el => el.classList.add("revealed"));
-    });
+    // Module & Dedicated Category Filter Pills
+    function resetFilterBtnStyles() {
+      document.querySelectorAll(".mod-filter-btn").forEach(b => {
+        const f = b.getAttribute("data-mod-filter");
+        b.classList.remove("bg-indigo-600", "bg-emerald-600", "bg-sky-600", "text-white", "border-emerald-600", "border-sky-600");
+        if (f === "steps") {
+          b.classList.add("bg-emerald-50", "text-emerald-800", "border-emerald-200");
+        } else if (f === "tables") {
+          b.classList.add("bg-sky-50", "text-sky-800", "border-sky-200");
+        } else {
+          b.classList.add("bg-slate-100", "text-slate-700");
+        }
+      });
+    }
 
-    // Module Filter Tabs
     document.querySelectorAll(".mod-filter-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         activeModFilter = btn.getAttribute("data-mod-filter");
-        document.querySelectorAll(".mod-filter-btn").forEach(b => {
-          b.classList.remove("bg-indigo-600", "text-white");
-          b.classList.add("bg-slate-100", "text-slate-700");
-        });
-        btn.classList.remove("bg-slate-100", "text-slate-700");
-        btn.classList.add("bg-indigo-600", "text-white");
+        resetFilterBtnStyles();
+
+        if (activeModFilter === "steps") {
+          btn.classList.remove("bg-emerald-50", "text-emerald-800", "border-emerald-200");
+          btn.classList.add("bg-emerald-600", "text-white", "border-emerald-600");
+        } else if (activeModFilter === "tables") {
+          btn.classList.remove("bg-sky-50", "text-sky-800", "border-sky-200");
+          btn.classList.add("bg-sky-600", "text-white", "border-sky-600");
+        } else {
+          btn.classList.remove("bg-slate-100", "text-slate-700");
+          btn.classList.add("bg-indigo-600", "text-white");
+        }
+
         applyFiltersAndSearch();
       });
     });
 
-    // Live Search & Highlighting
+    // Search & Filter Logic
     const searchInput = document.getElementById("searchInput");
     const searchCount = document.getElementById("searchCount");
 
@@ -1952,7 +2020,20 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
 
       document.querySelectorAll(".study-card").forEach(card => {
         const mod = card.getAttribute("data-module");
-        const modMatch = activeModFilter === "all" || mod === activeModFilter;
+        const hasSteps = card.getAttribute("data-has-steps") === "true";
+        const hasTables = card.getAttribute("data-has-tables") === "true";
+
+        let modMatch = false;
+        if (activeModFilter === "all") {
+          modMatch = true;
+        } else if (activeModFilter === "steps") {
+          modMatch = hasSteps;
+        } else if (activeModFilter === "tables") {
+          modMatch = hasTables;
+        } else {
+          modMatch = mod === activeModFilter;
+        }
+
         const textMatch = !q || card.textContent.toLowerCase().includes(q.toLowerCase());
 
         if (modMatch && textMatch) {
@@ -1967,7 +2048,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
       });
 
       if (q) {
-        searchCount.textContent = `${totalHits}`;
+        searchCount.textContent = `${totalHits} hits`;
         searchCount.classList.remove("hidden");
       } else {
         searchCount.classList.add("hidden");
@@ -1983,7 +2064,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
       document.querySelector('.mod-filter-btn[data-mod-filter="all"]').click();
     });
 
-    // Initialize
+    // Initial Render
     renderAllContent();
   </script>
 </body>
