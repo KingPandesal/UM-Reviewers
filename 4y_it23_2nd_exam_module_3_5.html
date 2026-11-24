@@ -27,7 +27,7 @@
     }
 
     /* Blur Recall Mode */
-    body.recall-mode .recall-target {
+    body.recall-mode .recall-target[data-recall-role="definition"] {
       filter: blur(5px);
       background-color: #E2E8F0;
       border-radius: 0.375rem;
@@ -36,10 +36,36 @@
       user-select: none;
       padding: 0 4px;
     }
-    body.recall-mode .recall-target:hover {
+    body.recall-mode .recall-target[data-recall-role="definition"]:hover {
       filter: blur(2.5px);
     }
-    body.recall-mode .recall-target.revealed {
+    body.recall-mode .recall-target[data-recall-role="definition"].revealed {
+      filter: none;
+      background-color: #FEF3C7;
+      user-select: text;
+    }
+
+    body.recall-mode.recall-target-terms .recall-target[data-recall-role="definition"] {
+      filter: none;
+      background-color: transparent;
+      cursor: default;
+      user-select: text;
+      padding: 0;
+    }
+
+    body.recall-mode.recall-target-terms .recall-target[data-recall-role="term"] {
+      filter: blur(5px);
+      background-color: #E0E7FF;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: filter 0.2s ease, background-color 0.2s ease;
+      user-select: none;
+      padding: 0 4px;
+    }
+    body.recall-mode.recall-target-terms .recall-target[data-recall-role="term"]:hover {
+      filter: blur(2.5px);
+    }
+    body.recall-mode.recall-target-terms .recall-target[data-recall-role="term"].revealed {
       filter: none;
       background-color: #FEF3C7;
       user-select: text;
@@ -97,10 +123,17 @@
           </div>
 
           <!-- Blur Recall Toggle -->
-          <button id="toggleRecallBtn" type="button" title="Blur exact definitions so you can tap to reveal" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition shrink-0">
+          <button id="toggleRecallBtn" type="button" title="Blur exact definitions or terms so you can click to blur/unblur" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition shrink-0">
             <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
             <span>Blur Recall</span>
           </button>
+
+          <!-- Blur Target Selector (Definitions vs. Terms) -->
+          <label class="sr-only" for="blurTargetSelect">Blur Target</label>
+          <select id="blurTargetSelect" title="Choose whether to blur Definitions or Terms" class="px-2.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shrink-0 cursor-pointer">
+            <option value="definition" selected>Blur: Definitions</option>
+            <option value="term">Blur: Terms</option>
+          </select>
         </div>
       </div>
 
@@ -1648,6 +1681,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
     ];
 
     let activeModFilter = "all";
+    let activeBlurTarget = "definition";
 
     function showToast(msg) {
       const box = document.getElementById("toastBox");
@@ -1699,14 +1733,14 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
             if (idx > 0 && idx < item.length - 5) {
               const head = escapeHTML(item.slice(0, idx + 1));
               const tail = escapeHTML(item.slice(idx + 1));
-              contentHtml = `<strong class="text-slate-900">${head}</strong><span class="recall-target" title="Click to reveal">${tail}</span>`;
+              contentHtml = `<strong class="text-slate-900 recall-target" data-recall-role="term" title="Click to blur/unblur term">${head}</strong><span class="recall-target" data-recall-role="definition" title="Click to blur/unblur definition">${tail}</span>`;
             }
           } else {
             const colonIdx = item.indexOf(":");
             if (colonIdx > 0 && colonIdx < 48) {
               const head = escapeHTML(item.slice(0, colonIdx + 1));
               const tail = escapeHTML(item.slice(colonIdx + 1));
-              contentHtml = `<strong class="text-slate-900">${head}</strong><span class="recall-target" title="Click to reveal">${tail}</span>`;
+              contentHtml = `<strong class="text-slate-900 recall-target" data-recall-role="term" title="Click to blur/unblur term">${head}</strong><span class="recall-target" data-recall-role="definition" title="Click to blur/unblur definition">${tail}</span>`;
             }
           }
           return `<li class="flex items-start gap-2.5 text-sm sm:text-[15px] text-slate-700 leading-relaxed searchable-text">
@@ -1722,7 +1756,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
           const colonIdx = item.indexOf(":");
           let contentHtml = escapeHTML(item);
           if (colonIdx > 0 && colonIdx < 40) {
-            contentHtml = `<strong class="text-slate-900">${escapeHTML(item.slice(0, colonIdx + 1))}</strong><span class="recall-target" title="Click to reveal">${escapeHTML(item.slice(colonIdx + 1))}</span>`;
+            contentHtml = `<strong class="text-slate-900 recall-target" data-recall-role="term" title="Click to blur/unblur term">${escapeHTML(item.slice(0, colonIdx + 1))}</strong><span class="recall-target" data-recall-role="definition" title="Click to blur/unblur definition">${escapeHTML(item.slice(colonIdx + 1))}</span>`;
           }
           return `<li class="flex items-start gap-3 text-sm sm:text-[15px] text-slate-700 leading-relaxed searchable-text">
             <span class="mt-0.5 w-6 h-6 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">${i + 1}.</span>
@@ -1738,7 +1772,7 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
           const dotIdx = item.indexOf(".");
           let textHtml = escapeHTML(item);
           if (dotIdx > 0 && dotIdx < 65) {
-            textHtml = `<strong class="text-slate-900">${escapeHTML(item.slice(0, dotIdx + 1))}</strong><span class="recall-target" title="Click to reveal">${escapeHTML(item.slice(dotIdx + 1))}</span>`;
+            textHtml = `<strong class="text-slate-900 recall-target" data-recall-role="term" title="Click to blur/unblur term">${escapeHTML(item.slice(0, dotIdx + 1))}</strong><span class="recall-target" data-recall-role="definition" title="Click to blur/unblur definition">${escapeHTML(item.slice(dotIdx + 1))}</span>`;
           }
           return `<li class="flex items-start gap-3 p-3 rounded-xl border border-slate-200/80 bg-slate-50/70">
             <span class="mt-0.5 min-w-[2.1rem] h-6 px-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}.</span>
@@ -1759,11 +1793,16 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
       if (block.type === "table") {
         const ths = block.headers.map(h => `<th class="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100/90 border-b border-slate-200 searchable-text">${escapeHTML(h)}</th>`).join("");
         const trs = block.rows.map(row => {
+          const blurColIdx = typeof block.blurCol === "number" ? block.blurCol : (row.length > 1 ? row.length - 1 : -1);
           const tds = row.map((cell, cIdx) => {
-            const isBlur = block.blurCol === cIdx;
-            const inner = isBlur
-              ? `<span class="recall-target" title="Click to reveal exact definition">${escapeHTML(cell)}</span>`
-              : escapeHTML(cell);
+            const isTermCell = cIdx === 0 && blurColIdx !== 0 && row.length > 1;
+            const isDefCell = blurColIdx === cIdx;
+            let inner = escapeHTML(cell);
+            if (isTermCell) {
+              inner = `<span class="recall-target" data-recall-role="term" title="Click to blur/unblur term">${escapeHTML(cell)}</span>`;
+            } else if (isDefCell) {
+              inner = `<span class="recall-target" data-recall-role="definition" title="Click to blur/unblur definition">${escapeHTML(cell)}</span>`;
+            }
             return `<td class="px-3.5 py-2.5 text-xs sm:text-sm text-slate-700 border-b border-slate-100 align-top leading-relaxed ${cIdx === 0 ? "font-semibold text-slate-900" : ""} searchable-text">${inner}</td>`;
           }).join("");
           return `<tr class="hover:bg-indigo-50/30 transition">${tds}</tr>`;
@@ -1883,10 +1922,28 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
     // =========================================================================
     // INTERACTIVE EVENT LISTENERS
     // =========================================================================
+    function syncBlurTargetClass() {
+      document.body.classList.toggle("recall-target-terms", activeBlurTarget === "term");
+      document.querySelectorAll(".recall-target").forEach(el => el.classList.remove("revealed"));
+    }
+
     document.addEventListener("click", (e) => {
-      // Reveal blurred recall target
+      // Blur or unblur whichever target is chosen when clicked
       const recallEl = e.target.closest(".recall-target");
-      if (recallEl && document.body.classList.contains("recall-mode")) {
+      if (recallEl) {
+        const role = recallEl.getAttribute("data-recall-role");
+        if (role !== activeBlurTarget) return;
+
+        if (!document.body.classList.contains("recall-mode")) {
+          document.body.classList.add("recall-mode");
+          syncBlurTargetClass();
+          const recallBtn = document.getElementById("toggleRecallBtn");
+          recallBtn.classList.add("bg-amber-100", "border-amber-400");
+          recallEl.classList.add("revealed");
+          showToast(`Blur Recall ON (${activeBlurTarget === "term" ? "Terms" : "Definitions"})`);
+          return;
+        }
+
         recallEl.classList.toggle("revealed");
         return;
       }
@@ -1927,10 +1984,19 @@ Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
     document.getElementById("toggleRecallBtn").addEventListener("click", function () {
       document.body.classList.toggle("recall-mode");
       const active = document.body.classList.contains("recall-mode");
-      document.querySelectorAll(".recall-target").forEach(el => el.classList.remove("revealed"));
+      syncBlurTargetClass();
       this.classList.toggle("bg-amber-100", active);
       this.classList.toggle("border-amber-400", active);
-      showToast(active ? "Blur Recall ON — tap blurred text to reveal" : "Blur Recall OFF");
+      const label = activeBlurTarget === "term" ? "Terms" : "Definitions";
+      showToast(active ? `Blur Recall ON (${label}) — click item to blur/unblur` : "Blur Recall OFF");
+    });
+
+    // Blur Target Selector (Definitions vs. Terms)
+    document.getElementById("blurTargetSelect").addEventListener("change", function () {
+      activeBlurTarget = this.value;
+      syncBlurTargetClass();
+      const label = activeBlurTarget === "term" ? "Terms" : "Definitions";
+      showToast(`Blur target set to: ${label}`);
     });
 
     // Module & Dedicated Category Filter Pills
