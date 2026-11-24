@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verbatim Exam Reviewer — Working Inside a Computer (Modules 3–5)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+    }
+
+    /* Active Recall / Blur Mode */
+    body.recall-mode .recall-target {
+      filter: blur(5px);
+      background-color: #E2E8F0;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: filter 0.2s ease, background-color 0.2s ease;
+      user-select: none;
+      padding: 1px 5px;
+    }
+    body.recall-mode .recall-target:hover {
+      filter: blur(2.5px);
+    }
+    body.recall-mode .recall-target.revealed {
+      filter: none;
+      background-color: #FEF3C7;
+      user-select: text;
+    }
+
+    /* Search Highlight */
+    mark.search-hit {
+      background-color: #FDE047;
+      color: #0F172A;
+      padding: 0 2px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- Clean Top Sticky Header: Search, Module Tabs, and Blur Recall Toggle ONLY -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-2xs">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 space-y-3">
+      <!-- Top Row: Title, Search, Blur Recall -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="shrink-0">
+          <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Working Inside a Computer</h1>
+          <p class="text-xs text-slate-500">Modules 3, 4 &amp; 5 • Exact Verbatim Reviewer (Pages 1–51)</p>
+        </div>
+
+        <div class="flex items-center gap-2 flex-1 sm:max-w-md justify-end">
+          <!-- Search Bar -->
+          <div class="relative flex-1">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <input id="searchInput" type="search" placeholder="Search exact terms, rails, commands..." class="w-full pl-9 pr-14 py-2 text-xs sm:text-sm bg-slate-100/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+            <span id="searchCount" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">0</span>
+          </div>
+
+          <!-- Blur Recall Toggle -->
+          <button id="toggleRecallBtn" type="button" title="Blur exact definitions and tap them to reveal" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition shrink-0">
+            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+            <span>Blur Recall</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Module Filter Tabs -->
+      <nav class="flex items-center gap-1.5 overflow-x-auto pb-0.5" aria-label="Module sections">
+        <button data-mod-filter="all" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shrink-0 transition">All</button>
+        <button data-mod-filter="overview" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Overview &amp; Safety</button>
+        <button data-mod-filter="mod3" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 3</button>
+        <button data-mod-filter="mod4" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 4</button>
+        <button data-mod-filter="mod5" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Module 5</button>
+        <button data-mod-filter="end" class="mod-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0 transition">Capstone &amp; Glossary</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Clean Single-Column Reader -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <!-- Subtle Helper Note -->
+    <div id="recallNotice" class="hidden mb-6 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs sm:text-sm text-amber-950 flex items-center justify-between gap-3">
+      <span><strong>Blur Recall Active:</strong> Key definitions, tolerances, and descriptions are blurred. Click any blurred phrase to reveal or re-hide it.</span>
+      <button id="revealAllBtn" type="button" class="text-xs font-bold text-amber-800 underline shrink-0">Reveal All</button>
+    </div>
+
+    <!-- All Verbatim Sections -->
+    <div id="verbatimContentRoot" class="space-y-8"></div>
+
+    <!-- Empty Search State -->
+    <div id="noSearchResults" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200 p-6">
+      <p class="text-base font-bold text-slate-800 mb-1">No matching text found</p>
+      <p class="text-sm text-slate-500 mb-4">Try clearing your search or switching the tab back to "All".</p>
+      <button id="clearSearchBtn" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs sm:text-sm font-semibold hover:bg-indigo-700">Reset Filter</button>
+    </div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // 100% VERBATIM DOCUMENT DATA (PAGES 1–51) — ZERO PARAPHRASING
+    // =========================================================================
+    const STUDY_SECTIONS = [
+      // -----------------------------------------------------------------------
+      // COURSE OVERVIEW AND SAFETY FIRST (Pages 1–3)
+      // -----------------------------------------------------------------------
+      {
+        id: "overview-intro",
+        module: "overview",
+        moduleBadge: "Course Overview & Safety",
+        badgeColor: "indigo",
+        pageRef: "Page 1",
+        title: "Working Inside a Computer — Course Overview and Safety First",
+        blocks: [
+          {
+            type: "callout",
+            variant: "indigo",
+            title: "Modules 3, 4 and 5: Hardware assembly, motherboards, and system diagnostics",
+            text: "Lesson prepared for classroom or tutorial use | Estimated time: 9 to 12 hours across all modules"
+          },
+          {
+            type: "paragraph",
+            text: "These three modules move learners from knowing what the parts of a computer are to knowing how to work with them: opening a case, assembling and removing components, keeping the system powered and cool, understanding the motherboard that connects everything, and finding the cause when something goes wrong."
+          },
+          {
+            type: "subheading",
+            text: "Overall learning outcomes"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Safely assemble and disassemble a desktop computer using correct tools and procedures.",
+              "Explain what a power supply does, read its specifications, and test for common faults.",
+              "Describe how heat is generated and removed, and apply protective measures against ESD, power problems, dust and heat.",
+              "Compare motherboard form factors, sockets, chipsets and expansion options.",
+              "Install and configure a motherboard, including firmware (BIOS/UEFI) settings.",
+              "Apply a systematic troubleshooting method to separate hardware faults from software faults, using diagnostic and monitoring tools."
+            ]
+          }
+        ]
+      },
+      {
+        id: "overview-safety",
+        module: "overview",
+        moduleBadge: "Course Overview & Safety",
+        badgeColor: "rose",
+        pageRef: "Page 2",
+        title: "Universal safety rules & Why this matters",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Universal safety rules"
+          },
+          {
+            type: "bullets",
+            blurParts: true,
+            items: [
+              "Power off and unplug the computer from the wall before opening the case. For desktops, press the power button once after unplugging to drain residual charge.",
+              "Never open a power supply unit (PSU). Its capacitors can hold a dangerous charge even when unplugged. It is a replace-not-repair part.",
+              "Control electrostatic discharge (ESD). Use an anti-static wrist strap clipped to bare metal of the case, or touch the metal chassis regularly. Work on a hard, non-carpeted surface.",
+              "Hold components by their edges, never by chips, gold contacts or circuitry.",
+              "Keep a parts tray (magnetic if possible) so screws do not get lost.",
+              "Lift correctly. Cases, CRT-era monitors and some PSUs are heavy; bend the knees.",
+              "Mind sharp edges on case panels and heatsink fins."
+            ]
+          },
+          {
+            type: "callout",
+            variant: "amber",
+            title: "Why this matters",
+            text: "A static discharge too small for you to feel (below roughly 3,000 V) can still damage sensitive chips. Damage may be immediate or may shorten the part's life, causing the intermittent faults that are hardest to diagnose later."
+          }
+        ]
+      },
+      {
+        id: "overview-toolkit",
+        module: "overview",
+        moduleBadge: "Course Overview & Safety",
+        badgeColor: "indigo",
+        pageRef: "Pages 2–3",
+        title: "Essential toolkit",
+        blocks: [
+          {
+            type: "table",
+            headers: ["Tool", "Purpose"],
+            blurCol: 1,
+            rows: [
+              ["Magnetized Phillips #1 and #2 screwdrivers", "Case screws, drive bays, motherboard standoffs and screws"],
+              ["Anti-static wrist strap and mat", "Dissipates static charge safely"],
+              ["Needle-nose pliers / tweezers", "Retrieving dropped screws, setting jumpers"],
+              ["Cable ties or hook-and-loop straps", "Cable management for airflow"],
+              ["Compressed air or a blower; soft brush", "Dust removal (hold fans still while blowing)"],
+              ["Isopropyl alcohol (90%+) and lint-free cloth", "Cleaning old thermal paste and contacts"],
+              ["Thermal paste", "Fills microscopic gaps between CPU and cooler"],
+              ["Digital multimeter", "Measuring PSU voltages and continuity"],
+              ["Flashlight, parts tray, labels and marker", "Visibility and organization"],
+              ["PSU tester, POST card, spare known-good parts", "Quick fault isolation"]
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // MODULE 3: WORKING INSIDE A COMPUTER (Pages 3–21)
+      // -----------------------------------------------------------------------
+      {
+        id: "mod3-1-components",
+        module: "mod3",
+        moduleBadge: "Module 3.1",
+        badgeColor: "emerald",
+        pageRef: "Pages 3–5",
+        title: "3.1 Assembling and Disassembling Computer Systems — Components",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Identify the internal components of a desktop system and their positions.",
+              "Follow a correct order of operations to build a PC.",
+              "Disassemble a system while documenting and labeling to allow correct reassembly."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "The components you will handle"
+          },
+          {
+            type: "table",
+            headers: ["Component", "Role", "Key point when installing"],
+            blurCol: 2,
+            rows: [
+              ["Case (chassis)", "Houses and protects parts, directs airflow", "Match case size to motherboard form factor"],
+              ["Motherboard", "Main circuit board connecting all components", "Mount on standoffs only where holes align"],
+              ["CPU", "Executes instructions", "Align the triangle marker; never force"],
+              ["CPU cooler", "Removes CPU heat", "Apply thermal paste, secure evenly, plug in fan header"],
+              ["RAM (memory)", "Short-term working memory", "Use matching slots for dual-channel; click firmly"],
+              ["Storage (SSD/HDD, NVMe)", "Long-term data", "M.2 drives screw in at an angle; SATA needs data + power"],
+              ["Power supply unit", "Converts AC to DC for components", "Enough wattage and right connectors"],
+              ["Graphics card (if discrete)", "Renders images; often needs extra power", "Seat fully in the PCIe x16 slot; connect auxiliary power"],
+              ["Optional cards, optical drive", "Network, sound, capture, discs", "Install per slot type and available lanes"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Before you start: planning and preparation"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Check compatibility. CPU socket must match the motherboard; RAM type (e.g., DDR4 vs DDR5) must match the board; the cooler must support the socket and fit the case; the PSU must supply enough wattage and the right connectors; the graphics card must physically fit.",
+              "Read the manuals. Motherboard manuals include header pin diagrams and slot recommendations that save time.",
+              "Prepare the workspace. Well-lit, clean, flat, uncluttered, with ESD precautions in place."
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod3-1-assembly",
+        module: "mod3",
+        moduleBadge: "Module 3.1",
+        badgeColor: "emerald",
+        pageRef: "Pages 5–7",
+        title: "3.1 Assembly procedure (recommended order) & Instructor tip",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Assembly procedure (recommended order)"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Prepare the case. Remove side panels. Check which standoffs are installed and match them to the motherboard's mounting holes. Set the I/O shield if the board does not have it built in.",
+              "Install the CPU on the motherboard (easier outside the case). Lift the retention lever, align the CPU's corner marker with the socket's marker, lower it gently, and close the lever. Never touch the pins or contact pads.",
+              "Install RAM. Open the slot clips, align the notch, and press evenly until both clips click. For two sticks, use the slots the manual recommends for dual-channel mode.",
+              "Install M.2 storage on the board now if it sits beneath a heatsink or is hard to reach later.",
+              "Mount the CPU cooler. Apply a pea-sized amount of thermal paste (unless the cooler has pre-applied paste), mount according to the cooler's instructions, tighten diagonally in small increments, and connect the fan to the CPU_FAN header.",
+              "Place the motherboard in the case and fasten it with screws into the standoffs. Do not overtighten.",
+              "Install the PSU and secure it with four screws. Orient the fan toward the vent (usually down if the case has a bottom vent with a dust filter).",
+              "Install storage drives into bays or mounts; connect SATA data and power cables where used.",
+              "Install expansion cards (graphics card, etc.) in the correct PCIe slot; secure the bracket; connect auxiliary power.",
+              "Connect power cables: 24-pin main, CPU 4/8-pin, graphics card connectors, SATA/Molex as needed.",
+              "Connect front-panel connectors: power switch, reset, power LED, HDD LED, front USB, audio, and case fans. Follow the motherboard manual.",
+              "Manage cables behind the motherboard tray, secure them with ties, and keep fans' paths clear.",
+              "Review before power-on. Check every connector is seated, nothing is loose inside, and no stray screws remain.",
+              "First boot. Connect monitor, keyboard and power. Enter BIOS/UEFI to confirm the CPU, RAM and drives are detected. Then install the operating system."
+            ]
+          },
+          {
+            type: "callout",
+            variant: "indigo",
+            title: "Instructor tip",
+            text: "Have learners do a \"dry run\" outside the case on the motherboard box (\"breadboarding\") to test CPU, RAM, cooler and PSU before final installation. If it boots there, any later problem is probably due to case installation (e.g., a short from a misplaced standoff)."
+          }
+        ]
+      },
+      {
+        id: "mod3-1-disassembly",
+        module: "mod3",
+        moduleBadge: "Module 3.1",
+        badgeColor: "emerald",
+        pageRef: "Pages 7–9",
+        title: "3.1 Disassembly procedure, Common mistakes & Activity 3.1",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Disassembly procedure"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Shut down, unplug and discharge. Disconnect all external cables. Label or photograph what goes where.",
+              "Put on the wrist strap. Remove side panels.",
+              "Photograph the internals before removing anything, particularly cable routes and front-panel connectors.",
+              "Remove expansion cards (release the retention latch on the PCIe slot, lift evenly).",
+              "Disconnect drives (SATA data and power), then unscrew and remove them.",
+              "Disconnect the power cables from the motherboard and the CPU, then remove the PSU if needed.",
+              "Remove RAM by pressing the clips outward.",
+              "Remove the cooler. Twist the cooler gently before lifting if the paste has hardened, to avoid pulling the CPU out of the socket.",
+              "Unscrew and lift out the motherboard. Store it in an anti-static bag.",
+              "Sort and label screws by type (case, motherboard, drive, PSU)."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Common mistakes"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Forgetting the I/O shield, then discovering it after the board is mounted.",
+              "Extra standoffs that touch the underside of the board, causing a short.",
+              "Pressing RAM or CPU at an angle and bending pins or snapping a slot clip.",
+              "Leaving the plastic film on a cooler's base.",
+              "Plugging the 8-pin CPU power connector into a PCIe graphics power port, or vice versa.",
+              "Overtightening screws and cracking the board."
+            ]
+          },
+          {
+            type: "activity",
+            title: "Activity 3.1: Guided build",
+            items: [
+              "1. In pairs, inspect a decommissioned or training PC. Identify and list each component and its role.",
+              "2. Photograph the interior, then disassemble it fully, labeling cables.",
+              "3. Reassemble it following the procedure above, with one learner reading steps and the other performing them. Swap roles.",
+              "4. Boot to BIOS/UEFI and confirm that all components are detected."
+            ],
+            footer: "Assessment checklist: safety observed (strap, power off). correct order no forced parts tidy cables successful POST."
+          }
+        ]
+      },
+      {
+        id: "mod3-2-psu",
+        module: "mod3",
+        moduleBadge: "Module 3.2",
+        badgeColor: "emerald",
+        pageRef: "Pages 9–11",
+        title: "3.2 Power Supply Functions, DC Voltage Rails, Form Factors & Connectors",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Explain how a PSU converts and distributes power.",
+              "Identify PSU connectors and read a PSU label.",
+              "Test a PSU and identify typical power-related faults safely."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "What does a PSU do?"
+          },
+          {
+            type: "paragraph",
+            text: "The wall outlet supplies alternating current (AC) at a high voltage (for example, 220-240 V at 60 Hz in the Philippines). Computer components need low-voltage direct current (DC). The PSU:"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Converts AC to DC (rectification, filtering and regulation).",
+              "Steps down voltage to the levels needed by components.",
+              "Regulates output so voltages stay stable under changing load.",
+              "Distributes power through cables and connectors on separate \"rails\".",
+              "Protects the system through circuits such as over-voltage (OVP), under-voltage (UVP), over-current (OCP), over-power (OPP) and short-circuit protection (SCP).",
+              "Signals readiness to the motherboard through the Power Good signal. If the voltages are not stable, the board will not start."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "DC voltage rails and what they power"
+          },
+          {
+            type: "table",
+            headers: ["Rail", "Typical use"],
+            blurCol: 1,
+            rows: [
+              ["+3.3 V", "Memory-related circuits, some chipset and M.2 logic"],
+              ["+5 V", "SATA drive logic, USB, some motherboard circuits"],
+              ["+12 V", "CPU, graphics cards, fans, drive motors. The most important rail in modern PCs."],
+              ["-12 V", "Legacy serial and some older expansion cards (often unused today; may be absent on recent PSUs)"],
+              ["+5 VSB (standby)", "Always on while the PSU is plugged in and switched on. Powers the motherboard's standby circuits, such as the power button and USB charging."]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "PSU form factors and standards"
+          },
+          {
+            type: "bullets",
+            items: [
+              "ATX: the standard desktop size. SFX / SFX-L: smaller for compact cases. TFX, Flex ATX: slim systems.",
+              "Modular types: non-modular (all cables attached), semi-modular (essential cables attached), fully modular (all detachable). Modular units reduce cable clutter.",
+              "Efficiency (80 PLUS): certification levels (Standard, Bronze, Silver, Gold, Platinum, Titanium) indicate how efficiently the PSU converts AC to DC at set load levels. A higher level wastes less power as heat."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Common connectors"
+          },
+          {
+            type: "table",
+            headers: ["Connector", "Powers", "Notes"],
+            blurCol: 1,
+            rows: [
+              ["24-pin ATX (20+4)", "Motherboard", "Keyed; latch clicks in"],
+              ["4-pin / 8-pin (4+4) EPS12V or ATX12V", "CPU", "Usually located near the CPU socket; do not confuse with PCIe power"],
+              ["6-pin / 8-pin (6+2) PCIe", "Graphics cards", "Newer cards may use a 12-pin or 16-pin (12VHPWR / 12V-2x6) connector; seat it fully and avoid sharp bends"],
+              ["SATA power (15-pin)", "SSDs, HDDs, optical drives", "L-shaped keyed connector"],
+              ["Molex (4-pin peripheral)", "Older drives, fans, accessories", "Legacy; tapered corners guide orientation"]
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod3-2-troubleshooting",
+        module: "mod3",
+        moduleBadge: "Module 3.2",
+        badgeColor: "emerald",
+        pageRef: "Pages 11–14",
+        title: "3.2 PSU Wattage, Symptoms, Troubleshooting & Multimeter Testing",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Choosing the right wattage"
+          },
+          {
+            type: "paragraph",
+            text: "Add up the power draw of the CPU and graphics card (the largest consumers), plus other parts, then add headroom (commonly 20 to 30%) for efficiency and future upgrades. PSU wattage calculators from reputable manufacturers can help. A PSU that is too weak may cause crashes under load; an excessively large PSU wastes money and can be less efficient at low loads."
+          },
+          {
+            type: "subheading",
+            text: "Symptoms of PSU problems"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Computer does not power on at all; no fan, no lights.",
+              "Computer powers on then shuts off immediately, or restarts randomly, especially under heavy load.",
+              "Unexplained blue screens or freezes that appear power-related.",
+              "Burning smell, smoke, or noticeable electrical buzzing or coil whine from the PSU.",
+              "Fan inside the PSU does not spin or is very noisy.",
+              "Unit feels abnormally hot or trips the circuit breaker."
+            ]
+          },
+          {
+            type: "callout",
+            variant: "rose",
+            title: "Stop immediately if you smell burning",
+            text: "Unplug the system and do not power it on again until the cause is found. Never open the PSU case; replace the unit."
+          },
+          {
+            type: "subheading",
+            text: "Troubleshooting steps"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Check the basics. Is the outlet live? Is the power cable firmly seated? Is the PSU's rear switch set to ON (I)? Try a different cable, outlet or surge protector. Check the voltage selector (if present) matches local mains.",
+              "Check internal connections. Confirm the 24-pin and CPU power connectors are fully seated, and the front-panel power switch lead is on the correct header pins.",
+              "Remove non-essential loads. Disconnect extra drives, cards and USB devices; try booting with minimum components (CPU, one RAM stick, graphics if no integrated video).",
+              "Use a PSU tester. Plug the 24-pin connector into the tester; it displays voltages for each rail and the Power Good signal. Note that a tester checks the unit without a real load.",
+              "Use a multimeter (see below) on a connector, with a load connected where possible.",
+              "Swap with a known-good PSU. This is often the most reliable test. If the system works, replace the suspected PSU."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Testing with a multimeter"
+          },
+          {
+            type: "paragraph",
+            text: "Set the meter to DC volts. With the PSU connected to a system that is turned on (or using the jump-start test below), place the black probe on a ground pin (black wire) and the red probe on the pin under test. Acceptable tolerances based on ATX guidelines:"
+          },
+          {
+            type: "table",
+            headers: ["Rail", "Nominal", "Acceptable range (typical)"],
+            blurCol: 2,
+            rows: [
+              ["+3.3 V (orange)", "3.3 V", "3.14 to 3.47 V (±5%)"],
+              ["+5 V (red)", "5.0 V", "4.75 to 5.25 V (±5%)"],
+              ["+12 V (yellow)", "12.0 V", "11.4 to 12.6 V (±5%)"],
+              ["-12 V (blue)", "-12.0 V", "-10.8 to -13.2 V (±10%)"],
+              ["+5 VSB (purple)", "5.0 V", "4.75 to 5.25 V"],
+              ["Power Good (gray)", "+5 V", "Typically +2.4 to +5.25 V when ready"]
+            ]
+          },
+          {
+            type: "callout",
+            variant: "amber",
+            title: "About the \"paperclip test\"",
+            text: "Some guides jump-start a disconnected PSU by bridging the green PS_ON wire to a black ground wire. This only tells you whether the fan spins, not whether the voltages are correct under load, and it carries a risk if done carelessly. In a classroom setting, prefer a PSU tester or a known-good substitute, and perform the paperclip method only under instructor supervision with the PSU unplugged while connecting."
+          },
+          {
+            type: "callout",
+            variant: "indigo",
+            title: "Don't forget the supply chain upstream",
+            text: "Many \"PSU problems\" are actually wall-power problems: loose outlets, overloaded extension cords, brownouts or surges. Using a surge protector or UPS (next section) isolates the computer from these."
+          },
+          {
+            type: "activity",
+            title: "Activity 3.2: PSU label reading and testing",
+            items: [
+              "1. Examine a PSU label. Record its wattage, rated amps per rail (especially +12V), 80 PLUS rating, input voltage range, and form factor.",
+              "2. List every connector available and identify what each powers.",
+              "3. Use a PSU tester (or multimeter) to measure and record rail voltages. Decide whether each is within tolerance.",
+              "4. Compute the estimated wattage requirement for a given build (provided by the instructor) and choose a suitable PSU."
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod3-3-cooling",
+        module: "mod3",
+        moduleBadge: "Module 3.3",
+        badgeColor: "emerald",
+        pageRef: "Pages 14–18",
+        title: "3.3 Cooling Systems, Airflow, Cooler Installation & Temperature Monitoring",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Explain why computers need cooling and how heat is transferred.",
+              "Compare air and liquid cooling and install a CPU cooler correctly.",
+              "Apply protective measures against heat, dust, ESD and power disturbances."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Why cooling matters"
+          },
+          {
+            type: "paragraph",
+            text: "Electrical energy used by a processor becomes heat. If heat is not removed, temperatures rise until the chip protects itself by thermal throttling (reducing speed) or shutting down. Sustained high temperatures also shorten component life and cause instability, freezes and data corruption."
+          },
+          {
+            type: "subheading",
+            text: "How heat leaves the system"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Conduction: heat moves from the CPU die through the heat spreader (IHS), thermal paste, and the cooler's base plate.",
+              "Heat transport: copper heat pipes (or liquid in a loop) carry heat to a larger surface.",
+              "Convection: fans push air across fins (or radiator) so heat moves into the air.",
+              "Exhaust: case fans expel warm air and bring in cooler air."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Cooling components"
+          },
+          {
+            type: "table",
+            headers: ["Component", "Function", "Notes"],
+            blurCol: 1,
+            rows: [
+              ["Heatsink", "Metal (aluminum or copper) with fins to increase surface area", "Passive cooling if used without fan; common on chipsets, VRMS, SSDs"],
+              ["CPU fan / air cooler", "Fan on a heatsink; tower coolers use heat pipes", "Connects to CPU_FAN header; speed controlled by PWM"],
+              ["Thermal paste / pads", "Fills microscopic air gaps that would insulate", "Replace when removing the cooler; thin, even layer"],
+              ["Case fans", "Create airflow through the case", "Measured in CFM (airflow) and static pressure; sizes 80, 92, 120, 140 mm"],
+              ["All-in-one (AIO) liquid cooler", "Sealed loop: water block, tubes, radiator, fans, pump", "Quieter at high loads and good for compact CPU areas; pump failure is a risk; needs correct radiator mounting"],
+              ["Custom liquid loop", "User-built loop with reservoir and pump", "High performance but more maintenance and leak risk"],
+              ["Dust filters", "Block dust at intake", "Clean regularly"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Air vs. liquid cooling"
+          },
+          {
+            type: "twocol",
+            leftTitle: "Air cooling",
+            leftItems: [
+              "Simple, reliable, low cost",
+              "No pump or leak risk",
+              "Large towers may block RAM or case panels"
+            ],
+            rightTitle: "Liquid cooling (AIO)",
+            rightItems: [
+              "Better heat capacity for high-end CPUs",
+              "Frees space around the socket; neat look",
+              "More parts that can fail; typically higher cost"
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Case airflow principles"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Cool air in at the front and bottom; hot air out at the rear and top.",
+              "Aim for slightly positive pressure (more intake than exhaust) with filters on intakes, so dust enters only through filtered openings.",
+              "Avoid cable clutter in the airflow path; leave space between components.",
+              "Keep the case away from walls and enclosed cabinets; ensure room ventilation. High room temperature in tropical climates directly raises component temperature."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Installing a CPU cooler (summary)"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Clean the CPU's top surface with isopropyl alcohol if old paste is present.",
+              "Apply a pea-sized dot of paste at the center (or use a pre-applied pad) and let the cooler's pressure spread it.",
+              "Align the cooler with the mounting bracket (check the right bracket for your socket).",
+              "Tighten screws in a cross (diagonal) pattern, gradually, until snug.",
+              "Connect the fan cable to CPU_FAN, and confirm in BIOS/UEFI that it reads a fan speed."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Monitoring temperatures"
+          },
+          {
+            type: "paragraph",
+            text: "Typical guidelines (verify with your processor's specification): idle CPU temperatures are commonly in the 30 to 50 °C range; under heavy load, many desktop CPUs run in the 60 to 85 °C range. Sustained temperatures near the manufacturer's maximum (\"TjMax\", often 95 to 100 °C) indicate a cooling problem. Use software such as HWMonitor, Core Temp or the BIOS/UEFI hardware monitor."
+          },
+          {
+            type: "subheading",
+            text: "Cooling troubleshooting"
+          },
+          {
+            type: "table",
+            headers: ["Symptom", "Likely cause", "Action"],
+            blurCol: 1,
+            rows: [
+              ["Random shutdowns or throttling under load", "Dust-clogged heatsink, failed fan, dried paste, poor contact", "Clean, replace paste, reseat cooler, check fan RPM"],
+              ["Loud fan noise", "Dust, worn bearings, fans at max due to heat", "Clean or replace fan; improve airflow"],
+              ["BIOS warning \"CPU Fan Error\"", "Fan not on CPU_FAN header, or fan failed", "Verify connection; replace fan"],
+              ["High idle temperature", "Cooler loosely mounted, protective film left on base, pump failure (AIO)", "Reinstall; check pump and tubing"],
+              ["Hot case exterior, hot graphics card", "Blocked vents, too few fans", "Add or rearrange fans; clean filters"]
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod3-3-protection",
+        module: "mod3",
+        moduleBadge: "Module 3.3",
+        badgeColor: "emerald",
+        pageRef: "Pages 18–21",
+        title: "3.3 Hardware Protection (ESD, Power, Environmental, Data) & Activity 3.3",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Cooling is one part of a broader approach to protecting hardware and data from environmental and electrical hazards."
+          },
+          {
+            type: "subheading",
+            text: "1. Electrostatic discharge (ESD)"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Use wrist straps, anti-static mats, and anti-static bags.",
+              "Avoid working in dry air with synthetic clothing and carpeted floors.",
+              "Store spare parts in their anti-static packaging."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "2. Power disturbances and devices that protect against them"
+          },
+          {
+            type: "table",
+            headers: ["Problem", "Description", "Protection"],
+            blurCol: 2,
+            rows: [
+              ["Surge / spike", "Brief over-voltage (lightning, grid switching)", "Surge protector (look for joule rating and clamping voltage)"],
+              ["Sag / brownout", "Low voltage for a period", "Line-interactive UPS or voltage regulator (AVR)"],
+              ["Blackout", "Complete power loss", "UPS with battery for safe shutdown"],
+              ["Noise (EMI/RFI)", "Electrical interference", "Line conditioner or filtered surge strip"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "UPS types"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Standby (offline): normally powers equipment from mains; switches to battery when power fails. Economical for home use.",
+              "Line-interactive: includes automatic voltage regulation to correct minor sags and surges without using the battery. A common choice for desktops and small offices.",
+              "Online (double-conversion): continuously converts AC to DC and back to AC, giving clean, stable power. Used for servers and critical equipment."
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "A UPS gives you minutes to save work and shut down properly; it is not designed to run a computer for hours. Choose a UPS rated in VA/watts above your equipment's total load."
+          },
+          {
+            type: "subheading",
+            text: "3. Environmental protection"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Dust: clean filters and interior every few months, or more frequently in dusty environments.",
+              "Humidity: keep it moderate. Very low humidity increases ESD; high humidity causes condensation and corrosion.",
+              "Liquids: keep drinks away from equipment.",
+              "Physical: stable surfaces, no stacking items on a case, secure laptops and use cable locks where theft is a risk."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "4. Data and system protection"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Keep regular backups (for example, the 3-2-1 approach: three copies, two media types, one offsite).",
+              "Apply operating system and firmware updates, and use reputable anti-malware software. Security principles such as access control, authentication and keeping systems patched help protect systems against attacks that mimic hardware faults (Stamp, 2022).",
+              "Enable drive S.M.A.R.T. monitoring to detect failing drives early."
+            ]
+          },
+          {
+            type: "activity",
+            title: "Activity 3.3: Thermal check and protection plan",
+            items: [
+              "1. Record idle CPU temperature using monitoring software. Run a stress workload (e.g., a video render or a stress-test tool) for 10 minutes and record the peak temperature.",
+              "2. Open the case, inspect fans and filters for dust, clean them, and repeat the test. Compare the numbers.",
+              "3. Create a one-page \"protection plan\" for a small computer lab: power protection, ESD policy, cleaning schedule, and backup routine."
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // MODULE 4: MOTHERBOARD AND SYSTEM COMPONENTS (Pages 21–33)
+      // -----------------------------------------------------------------------
+      {
+        id: "mod4-1-motherboards",
+        module: "mod4",
+        moduleBadge: "Module 4.1",
+        badgeColor: "indigo",
+        pageRef: "Pages 21–25",
+        title: "4.1 Types and Features of Motherboards, Form Factors, Major Parts & Firmware",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Identify the major parts and connectors of a motherboard.",
+              "Compare form factors, CPU sockets and chipsets.",
+              "Select a motherboard that suits a given use case."
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "The motherboard (mainboard) is the central printed circuit board. It provides electrical pathways (buses) and connectors that let the CPU, memory, storage, expansion cards and peripherals communicate and receive power."
+          },
+          {
+            type: "subheading",
+            text: "Form factors"
+          },
+          {
+            type: "paragraph",
+            text: "The form factor defines the board's size, mounting hole pattern, and layout, so it must match the case and PSU type."
+          },
+          {
+            type: "table",
+            headers: ["Form factor", "Approx. size (mm)", "Typical expansion", "Typical use"],
+            blurCol: 1,
+            rows: [
+              ["Extended ATX (E-ATX)", "305 x 330", "Many PCIe slots, multiple RAM slots", "Enthusiast, workstation"],
+              ["ATX", "305 x 244", "Up to 7 expansion slots, 4 RAM slots", "Standard desktops"],
+              ["Micro-ATX (mATX)", "244 x 244", "Up to 4 expansion slots", "Budget, office PCs"],
+              ["Mini-ITX", "170 x 170", "1 PCIe slot, usually 2 RAM slots", "Compact builds, home theater PCs"]
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "Smaller boards fit in larger cases (an ATX case can usually hold mATX and Mini-ITX), but not the reverse."
+          },
+          {
+            type: "subheading",
+            text: "Major parts of a motherboard"
+          },
+          {
+            type: "table",
+            headers: ["Part", "What it is / does"],
+            blurCol: 1,
+            rows: [
+              ["CPU socket", "Holds the processor. Types include LGA (pins in the socket; e.g., Intel LGA1700) and PGA/LGA variants used by AMD (e.g., AM4 uses PGA, AM5 uses LGA). The CPU generation must match the socket and chipset."],
+              ["Chipset", "Coordinates data flow between the CPU, memory, storage and peripherals; determines the number of USB/SATA/PCIe lanes and features such as overclocking support."],
+              ["RAM (DIMM) slots", "Hold memory modules. Supports a specific generation (DDR4, DDR5, which are not interchangeable) and has a maximum capacity and speed."],
+              ["PCI Express (PCIe) slots", "x16 for graphics cards; x1 / x4 for network, sound, storage or capture cards. Different generations (3.0, 4.0, 5.0) provide different bandwidth."],
+              ["Storage connectors", "SATA ports for 2.5\" / 3.5\" drives; M.2 slots for compact SSDs (NVMe over PCIe or SATA-based)."],
+              ["Power connectors", "24-pin main and 4/8-pin CPU power"],
+              ["VRM (voltage regulator module)", "Converts +12 V to the lower voltage the CPU needs; has MOSFETs, chokes, capacitors, often under a heatsink"],
+              ["BIOS/UEFI chip", "Firmware that initializes hardware at startup and loads the operating system"],
+              ["CMOS battery (CR2032)", "Keeps the clock and settings when the PC is off"],
+              ["Back panel (I/O panel)", "USB, video (HDMI/DisplayPort), Ethernet, audio jacks; may include Wi-Fi antenna connectors"],
+              ["Front-panel headers", "Pin sets for the case power/reset buttons, LEDs, USB and audio"],
+              ["Fan and RGB headers", "CPU_FAN, SYS_FAN / CHA_FAN, AIO_PUMP, and addressable RGB headers"],
+              ["Jumpers and debug LEDs", "Clear CMOS jumper/button, POST code display or status LEDs (CPU, DRAM, VGA, BOOT)"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Key features to compare"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Socket and chipset compatibility with the CPU you plan to use.",
+              "Memory: generation, number of slots, maximum capacity and supported speeds (including XMP/EXPO profiles).",
+              "Expansion: PCIe version, number and placement of slots, number of M.2 slots.",
+              "Connectivity: USB ports (including USB-C), onboard Wi-Fi and Bluetooth, Ethernet speed (1 GbE, 2.5 GbE).",
+              "Power delivery quality (VRM and heatsinks) for powerful CPUs.",
+              "Firmware support and update availability from the manufacturer.",
+              "Integrated graphics output if no discrete graphics card is planned."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Other board types you may meet"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Laptop and all-in-one boards: proprietary shapes; often with soldered CPU or RAM.",
+              "Server and workstation boards: dual sockets, ECC memory, remote management (BMC/IPMI).",
+              "Single-board computers (e.g., Raspberry Pi) and embedded boards: used in IoT and edge projects, where CPU, memory and I/O are integrated on one small board (Di, 2023)."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Firmware: BIOS vs. UEFI"
+          },
+          {
+            type: "table",
+            headers: ["Feature", "Legacy BIOS", "UEFI"],
+            blurCol: 2,
+            rows: [
+              ["Interface", "Text-based, keyboard", "Graphical, mouse support"],
+              ["Partition scheme", "MBR (disks up to 2 TB)", "GPT (very large disks)"],
+              ["Security", "Limited", "Secure Boot, TPM support"],
+              ["Boot speed", "Slower", "Faster"]
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "Most modern boards use UEFI, though many people still call it \"the BIOS\"."
+          },
+          {
+            type: "activity",
+            title: "Activity 4.1: Motherboard map",
+            items: [
+              "1. Given a bare motherboard (or a labeled photo), identify and label at least 12 parts.",
+              "2. Read the model name, then find the board's specification page from the manufacturer. Record socket, chipset, RAM type, max RAM, PCIe slots, M.2 slots and form factor.",
+              "3. Given three scenarios (office PC, gaming PC, compact media PC), choose a suitable form factor and justify the choice."
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod4-2-installing",
+        module: "mod4",
+        moduleBadge: "Module 4.2",
+        badgeColor: "indigo",
+        pageRef: "Pages 25–29",
+        title: "4.2 Installing and Configuring Motherboards, UEFI Settings & Firmware Flashing",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Install a motherboard correctly in a case and connect all required cables.",
+              "Configure essential UEFI/BIOS settings.",
+              "Update firmware safely and verify the configuration."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Installation steps"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Verify compatibility of the board with the case, CPU, RAM and PSU.",
+              "Prepare the case. Place standoffs matching the board's holes (do not install extra standoffs in places without holes). Fit the I/O shield, pressing it into the opening until it clicks.",
+              "Prepare the board outside the case: install the CPU, RAM, M.2 SSD and cooler if space permits.",
+              "Lower the board into the case at a slight angle so the rear ports go through the I/O shield cutouts, then align the holes with the standoffs.",
+              "Fasten with screws. Start with the center, then the corners, tightening gently, without cracking the board.",
+              "Connect power: 24-pin ATX, CPU 4/8-pin.",
+              "Connect front-panel headers following the manual's diagram. Typical connectors: PWR_SW (power switch), RESET_SW; PWR_LED+/-, HDD_LED+/- (polarity matters for LEDs, not for switches); USB 2.0 9-pin, USB 3.x 19/20-pin, USB-C front header; HD_AUDIO front audio.",
+              "Connect fans to CPU_FAN and chassis fan headers, plus storage SATA data cables.",
+              "Install the graphics card and other cards; connect auxiliary power.",
+              "Double-check everything, then power on and enter the UEFI/BIOS setup (commonly Del or F2)."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "First boot and UEFI/BIOS configuration checklist"
+          },
+          {
+            type: "table",
+            headers: ["Setting", "What to check or do"],
+            blurCol: 1,
+            rows: [
+              ["System information", "Confirm the CPU model, RAM amount, drives and firmware version are recognized"],
+              ["Date and time", "Set correctly"],
+              ["Memory profile (XMP / EXPO / DOCP)", "Enable to run RAM at its rated speed; otherwise it may run at a slower default"],
+              ["Boot order", "Put the installation USB first for OS install, then the system drive"],
+              ["Boot mode", "UEFI (with GPT) for modern systems; CSM/Legacy only for old operating systems"],
+              ["SATA mode", "AHCI is the usual choice (RAID only if configuring a RAID array)"],
+              ["Fan curves and hardware monitor", "Verify RPM and temperature readings; adjust fan profiles"],
+              ["Virtualization (Intel VT-x / AMD-V)", "Enable if using virtual machines"],
+              ["Secure Boot and TPM", "Enable if required (for example by newer Windows versions)"],
+              ["Passwords", "Set a supervisor/admin password if a lab policy requires it (and record it securely)"],
+              ["Save and exit", "Save changes (F10) and reboot"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Updating firmware (BIOS/UEFI flash)"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Identify the exact board model and current firmware version.",
+              "Download the update from the manufacturer's official website only, and read the release notes. Update only if it resolves an issue or adds needed support (e.g., a newer CPU).",
+              "Use the board's built-in flash utility (e.g., a feature in UEFI) with the file on a FAT32 USB drive.",
+              "Make sure power is stable (use a UPS if possible). Do not turn off or reset the system during flashing.",
+              "After the update, re-enter setup, load defaults if recommended, and reapply your settings."
+            ]
+          },
+          {
+            type: "callout",
+            variant: "rose",
+            title: "Risk",
+            text: "A failed firmware update can leave the board unable to boot. Many boards have a dual-BIOS or flashback feature that helps recover, but not all do. Using firmware from untrusted sources is also a security risk (Stamp, 2022)."
+          },
+          {
+            type: "subheading",
+            text: "Installing the operating system and drivers"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Install the OS from USB or network and apply updates.",
+              "Install chipset, graphics, audio and network drivers from the board or component manufacturer's site.",
+              "Check Device Manager for unknown devices or warning icons."
+            ]
+          },
+          {
+            type: "activity",
+            title: "Activity 4.2: Install, configure and document",
+            items: [
+              "1. Install a motherboard in a case, following the steps above. Record any difficulties.",
+              "2. Boot to UEFI and complete the configuration checklist, taking a photo or screenshot of each key screen.",
+              "3. Enable the memory profile, then compare reported RAM speed before and after.",
+              "4. Write a short build report: components, firmware version, settings changed, and results of the first boot."
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod4-3-troubleshooting",
+        module: "mod4",
+        moduleBadge: "Module 4.3",
+        badgeColor: "indigo",
+        pageRef: "Pages 29–33",
+        title: "4.3 Troubleshooting Motherboard Issues, POST, Symptom Guide & Minimal Boot",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Explain the POST sequence and interpret beep codes and debug indicators.",
+              "Diagnose common motherboard-related symptoms using a logical elimination approach.",
+              "Decide whether to repair, reseat, reset or replace a component."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "The POST (Power-On Self-Test)"
+          },
+          {
+            type: "paragraph",
+            text: "When power is applied, the firmware tests essential hardware (CPU, memory, graphics, keyboard, storage controllers) before loading the OS. If it finds a critical fault, it signals using beeps, LEDs or a POST code display. Beep code meanings vary by manufacturer (AMI, Award, Phoenix, etc.), so always consult your board's manual."
+          },
+          {
+            type: "table",
+            headers: ["Common indications (examples; check the manual)", "Typically points to"],
+            blurCol: 1,
+            rows: [
+              ["One short beep at startup", "Normal POST pass on many systems"],
+              ["Continuous or repeating long beeps", "Memory problem"],
+              ["Series of short beeps", "Power or motherboard fault (varies)"],
+              ["Beeps with no display", "Graphics card or RAM issue"],
+              ["Debug LEDs: CPU, DRAM, VGA, BOOT", "The LED that stays lit shows the stage where POST stopped"],
+              ["Two-digit POST code display", "Look up the code in the board's manual"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Symptom-based guide"
+          },
+          {
+            type: "table",
+            headers: ["Symptom", "Possible causes", "What to try"],
+            blurCol: 1,
+            rows: [
+              ["No power, no lights or fans", "PSU off or failed, power cable, front-panel switch lead wrongly connected, short circuit", "Check wall power and PSU switch; test the PSU; short the PWR_SW pins with a screwdriver tip to test the board; check for stray standoffs"],
+              ["Fans spin, no display, no POST", "RAM not seated, CPU power not connected, graphics card or CPU problem, bad firmware, CMOS settings", "Reseat RAM (try one stick at a time, in the slot recommended in the manual); confirm 8-pin CPU power; try integrated graphics; clear CMOS"],
+              ["Restarts or reboots in a loop", "Overheating, unstable memory profile, PSU instability, short in case", "Reset to defaults, disable XMP temporarily, check temperatures, breadboard outside the case"],
+              ["Date/time resets, \"CMOS checksum error\"", "Dead CMOS battery", "Replace the CR2032 (about 3 V); reconfigure the BIOS"],
+              ["USB, audio or network ports not working", "Missing drivers, disabled in BIOS, damaged header or port", "Update drivers; enable the device in UEFI; try another port or header"],
+              ["Drive not detected", "Loose cable, wrong SATA/M.2 mode, disabled port, dead drive", "Reseat the cable; check UEFI storage configuration; test with another port or drive"],
+              ["Random freezes or blue screens", "Faulty RAM, overheating VRM, driver conflicts, failing board capacitors", "Run a memory test; check temperatures; update firmware and drivers"],
+              ["Unit boots only after pressing reset, or intermittently", "Poor contact (cracked board, loose standoff), failing PSU", "Inspect board for flex or damage; reseat all components"],
+              ["Forgot UEFI password or bad setting prevents booting", "Misconfiguration", "Clear CMOS using the jumper/button, or by removing the battery for a few minutes with the PSU switched off and unplugged"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Visual inspection checklist"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Capacitors: bulging tops, leaking fluid or brown residue.",
+              "Burn marks or discoloration near the VRM or power connectors.",
+              "Bent or broken CPU socket pins (on boards with pins in the socket).",
+              "Cracks or scratches exposing the copper traces.",
+              "Dust, corrosion or liquid damage.",
+              "Loose or extra standoffs touching the underside."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "The \"minimal boot\" and \"swap\" strategy"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Remove everything except the PSU, motherboard, CPU with cooler, and one RAM stick (and a graphics card if the CPU has no integrated graphics).",
+              "Attempt to boot. If it posts, add components back one at a time, testing after each.",
+              "The last component added before the fault returns is the likely cause.",
+              "If a minimal system fails, swap with known-good parts (RAM, PSU, CPU if possible) to isolate which one is faulty."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Clearing CMOS safely"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Shut down, switch off the PSU and unplug the power cable.",
+              "Use the CLR_CMOS button or jumper per the manual, or remove the coin cell battery for 1 to 5 minutes.",
+              "Restore the jumper or battery, plug in, power on and re-enter setup to reconfigure."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Repair or replace?"
+          },
+          {
+            type: "paragraph",
+            text: "Boards are rarely repaired at a classroom or shop level. Reseating parts, resetting firmware and replacing a CMOS battery are within scope. Physical damage, shorted circuits or failed VRMs usually mean replacing the motherboard, which may require replacing the CPU or RAM if the socket or memory generation differs."
+          },
+          {
+            type: "activity",
+            title: "Activity 4.3: Fault clinic",
+            items: [
+              "The instructor prepares 4 to 5 PCs with hidden faults (e.g., RAM unseated, CPU power unplugged, wrong boot order, dead CMOS battery, loose front-panel connector). Groups:",
+              "1. Record the symptoms.",
+              "2. List at least two possible causes each, ordered from easiest to test to hardest.",
+              "3. Test, document the result of each step, and fix the fault.",
+              "4. Complete a service report with symptom, cause, action and result."
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // MODULE 5: DIAGNOSING COMPUTER SYSTEM PROBLEMS (Pages 33–45)
+      // -----------------------------------------------------------------------
+      {
+        id: "mod5-1-identifying",
+        module: "mod5",
+        moduleBadge: "Module 5.1",
+        badgeColor: "amber",
+        pageRef: "Pages 33–39",
+        title: "5.1 Identifying Hardware and Software Issues & Structured Troubleshooting",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Apply a structured troubleshooting methodology.",
+              "Distinguish hardware faults from software, configuration and security issues.",
+              "Document problems and solutions professionally."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "A structured troubleshooting method"
+          },
+          {
+            type: "paragraph",
+            text: "Good technicians do not guess; they follow a repeatable process, similar to the widely used industry model:"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Identify the problem. Ask the user questions: What happened? When did it start? What changed recently (new software, update, hardware, power event)? Can the problem be reproduced? Back up important data before changes if possible.",
+              "Establish a theory of probable cause. Start with the obvious and the simple (power, cables, settings) before the complex.",
+              "Test the theory. If confirmed, decide next steps. If not, form a new theory or escalate.",
+              "Establish a plan of action and identify potential effects (data loss, downtime). Obtain approval if needed.",
+              "Implement the solution or escalate to a specialist.",
+              "Verify full system functionality and implement preventive measures.",
+              "Document findings, actions and outcomes."
+            ]
+          },
+          {
+            type: "callout",
+            variant: "indigo",
+            title: "Troubleshooting habits",
+            text: "Change one thing at a time. Work from least invasive to most invasive. Record what you tried. Use the \"divide and conquer\" approach: split the system into halves (e.g., hardware/software, internal/external) and test which half holds the fault (Gookin, 2023)."
+          },
+          {
+            type: "subheading",
+            text: "Hardware vs. software: how to tell the difference"
+          },
+          {
+            type: "table",
+            headers: ["Clue", "Points toward hardware", "Points toward software"],
+            blurCol: 1,
+            rows: [
+              ["When it occurs", "Before the OS loads (POST/BIOS stage); persists in the BIOS or when booting from a different OS", "Only after the OS loads, or only in a specific app or user account"],
+              ["Sounds and smells", "Clicking drives, beeps, grinding fans, burning smell", "None"],
+              ["Error messages", "\"No boot device\", \"Memory error\", S.M.A.R.T. warnings", "Application crash dialogs, missing DLL, blue screen citing a driver or system file"],
+              ["Reproducibility", "Occurs with heat or load, wiggling a cable, or touching a part", "Follows a particular action, update or installed program"],
+              ["Effect of reinstall", "Problem returns after reinstalling the OS", "Problem disappears after a clean install or restore"],
+              ["Test on another system", "Faulty part fails on a second machine", "Works on another machine with the same OS image only if the image is not at fault"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Common hardware problems"
+          },
+          {
+            type: "table",
+            headers: ["Component", "Typical symptoms", "First checks"],
+            blurCol: 2,
+            rows: [
+              ["Memory (RAM)", "Random crashes, blue screens, failure to POST, corrupted files, long beeps", "Reseat; test sticks individually; run a memory diagnostic"],
+              ["Hard drive / SSD", "Clicking sounds (HDD), very slow performance, files corrupt, \"no boot device\", SMART warnings", "Check cables; view SMART data; back up data immediately"],
+              ["CPU / cooling", "Overheating, throttling, shutdowns", "Check temperatures, fans, paste"],
+              ["Graphics card", "Artifacts, flickering, driver crashes, no video", "Reseat; check power; test another cable, monitor or card"],
+              ["Power supply", "Random shutdowns, no power", "Voltage tests; swap known-good"],
+              ["Peripherals", "Device not recognized, intermittent connection", "Test another port, cable or computer"],
+              ["Battery / CMOS", "Time resets, laptop not charging", "Replace coin cell; check adapter"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Common software issues"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Operating system corruption: failure to boot, missing system files, repeated blue screens.",
+              "Driver problems: unrecognized or malfunctioning devices, blue screens after an update.",
+              "Application errors: crashes, freezes, memory leaks (an application slowly consumes more memory until the system slows). Software reliability depends on defects, resource handling and testing, and understanding failure patterns helps identify whether a fault is systematic or random (Youree, 2023).",
+              "Configuration conflicts: startup programs, incompatible settings, wrong boot mode.",
+              "Insufficient resources: low disk space, too little RAM for the workload.",
+              "Failed or partial updates."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Security-related causes"
+          },
+          {
+            type: "paragraph",
+            text: "Malware can mimic hardware or software faults: slow performance, unexplained network activity, pop-ups, disabled security tools, or unexpected high CPU use. Basic security principles including least privilege, regular patching, strong authentication and monitoring reduce these risks (Stamp, 2022). When symptoms are suspicious, scan the system with updated anti-malware tools (an offline scan may be needed), check running processes and startup items, and isolate the machine from the network if infection is suspected."
+          },
+          {
+            type: "subheading",
+            text: "Boot-stage diagnosis: where does it fail?"
+          },
+          {
+            type: "numbered",
+            items: [
+              "No power or POST: PSU, motherboard, CPU, RAM, power connections.",
+              "POST completes but \"no boot device\": drive not detected, wrong boot order, corrupted boot loader.",
+              "OS logo appears, then crashes or loops: OS corruption, driver, or failing storage. Try Safe Mode or recovery options.",
+              "Desktop loads but slow or unstable: resources, malware, startup programs, drive health, overheating."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Documenting a problem"
+          },
+          {
+            type: "table",
+            headers: ["Field", "Example"],
+            rows: [
+              ["Date / technician", "Nov 6, 2026 / J. Dela Cruz"],
+              ["Device / user", "Lab PC-07 / student account"],
+              ["Reported symptom", "Restarts randomly during video editing"],
+              ["Findings", "CPU at 96 °C under load; heatsink clogged with dust; fan intact"],
+              ["Action taken", "Cleaned heatsink and fans; replaced thermal paste"],
+              ["Result", "Peak load temperature dropped to 74 °C; no restart after a 30-minute test"],
+              ["Preventive advice", "Clean filters monthly; schedule inspection every 3 months"]
+            ]
+          },
+          {
+            type: "activity",
+            title: "Activity 5.1: Case studies",
+            items: [
+              "For each scenario, decide whether it is more likely a hardware, software, or security issue; list your first three diagnostic steps; and identify what evidence would confirm your theory.",
+              "1. A computer shows \"Operating system not found\" after a power outage.",
+              "2. A PC runs fine for 10 minutes and then shuts off when a game starts.",
+              "3. A computer that was fast last month now takes ten minutes to boot, and the browser opens unwanted tabs.",
+              "4. A computer emits repeating beeps and the screen stays black.",
+              "5. Blue screens appear only after installing a new printer driver."
+            ]
+          }
+        ]
+      },
+      {
+        id: "mod5-2-tools",
+        module: "mod5",
+        moduleBadge: "Module 5.2",
+        badgeColor: "amber",
+        pageRef: "Pages 39–45",
+        title: "5.2 Using Diagnostic and Monitoring Tools, CLI Utilities & Interpreting Results",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Objectives"
+          },
+          {
+            type: "bullets",
+            items: [
+              "Select and use built-in and third-party diagnostic tools.",
+              "Interpret monitoring data such as temperature, load, memory use and disk health.",
+              "Combine tool output with a structured method to reach conclusions."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Hardware diagnostic tools"
+          },
+          {
+            type: "table",
+            headers: ["Tool", "Used for"],
+            blurCol: 1,
+            rows: [
+              ["Multimeter", "Voltage, continuity and resistance checks"],
+              ["PSU tester", "Quick check of PSU rails and Power Good signal"],
+              ["POST card / debug LEDs", "Reads POST codes when the system will not display anything"],
+              ["Loopback plug", "Tests ports (network, serial, USB, depending on type)"],
+              ["Cable tester", "Verifies network cable wiring and continuity"],
+              ["Known-good spare parts", "Swap testing"],
+              ["Thermal camera or infrared thermometer", "Locates hot spots (use with care)"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Built-in Windows tools"
+          },
+          {
+            type: "table",
+            headers: ["Tool (how to open)", "What it shows or does"],
+            blurCol: 1,
+            rows: [
+              ["Task Manager (Ctrl+Shift+Esc)", "Running processes, CPU, memory, disk, network and GPU use; startup apps; ending unresponsive tasks"],
+              ["Resource Monitor (resmon)", "Detailed per-process use of CPU, memory, disk and network"],
+              ["Performance Monitor (perfmon)", "Logs counters over time to spot trends and bottlenecks"],
+              ["Event Viewer (eventvwr)", "System and application logs; warnings and errors with codes and timestamps"],
+              ["Device Manager (devmgmt.msc)", "Hardware list; shows drivers and problem flags; update, roll back, disable devices"],
+              ["System Configuration (msconfig)", "Boot options, Safe Mode, and service control"],
+              ["Windows Memory Diagnostic (mdsched)", "Tests RAM on restart"],
+              ["Reliability Monitor (perfmon /rel)", "Timeline of crashes, updates and failures"],
+              ["Disk Management / Optimize Drives", "Partition status and drive maintenance"],
+              ["Windows Security", "Malware scanning and protection status"],
+              ["Safe Mode / Windows Recovery Environment", "Start with minimal drivers, Startup Repair, System Restore"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Command-line utilities"
+          },
+          {
+            type: "code",
+            code: `# Check and repair system files
+sfc /scannow
+
+# Repair the Windows component store (run before sfc if needed)
+DISM /Online /Cleanup-Image /RestoreHealth
+
+# Check a disk for errors (may require restart for the system drive)
+chkdsk C: /f
+
+# Network diagnostics
+ping 8.8.8.8
+ipconfig /all
+tracert example.com
+nslookup example.com
+
+# System information
+systeminfo
+
+# Show battery health report (laptops)
+powercfg /batteryreport`
+          },
+          {
+            type: "callout",
+            variant: "amber",
+            title: "Use with care",
+            text: "Run command prompt tools as Administrator. chkdsk /f on a failing drive can stress it further, so back up important data first."
+          },
+          {
+            type: "subheading",
+            text: "Monitoring and testing software (third-party examples)"
+          },
+          {
+            type: "table",
+            headers: ["Purpose", "Example tools"],
+            blurCol: 1,
+            rows: [
+              ["Temperatures, fan speeds, voltages", "HWMonitor, HWiNFO, Core Temp, Open Hardware Monitor"],
+              ["Drive health (SMART)", "CrystalDiskInfo, manufacturer utilities (e.g., Samsung Magician, WD Dashboard)"],
+              ["Extended memory testing", "MemTest86 (boots from USB), MemTest86+"],
+              ["Stress / benchmark", "Prime95, OCCT, Cinebench, FurMark, 3DMark"],
+              ["Malware scanning", "Windows Security; reputable on-demand scanners"],
+              ["Hardware inventory", "CPU-Z, GPU-Z, Speccy"]
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "Download tools only from the developer's official site to avoid bundled malware."
+          },
+          {
+            type: "subheading",
+            text: "Interpreting results"
+          },
+          {
+            type: "table",
+            headers: ["Observation", "Interpretation", "Next step"],
+            blurCol: 1,
+            rows: [
+              ["CPU at 100% with no obvious program", "Runaway process, malware, background update", "Sort Task Manager by CPU; scan; check startup items"],
+              ["Memory use near 100% and disk activity spiking", "Insufficient RAM (paging to disk) or a memory leak", "Close or restart the leaking program; add RAM"],
+              ["Disk at 100% on an HDD", "Heavy access, indexing, failing drive", "Check SMART; consider SSD upgrade"],
+              ["SMART reports reallocated or pending sectors", "Drive degrading", "Back up and replace the drive"],
+              ["CPU temperature climbing to throttle point under light load", "Cooling failure", "Check fan, paste, contact"],
+              ["Event Viewer: repeated \"Disk\" or \"NTFS\" errors", "File system or drive/cable problem", "Run chkdsk; check cables; replace drive"],
+              ["Blue screen with a stop code", "Driver, memory, or disk issue depending on the code", "Note the code, check Event Viewer and minidump; roll back drivers; test RAM"],
+              ["MemTest86 reports errors", "Defective RAM (or unstable settings)", "Disable XMP and retest; test sticks singly; replace faulty module"]
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Baselining and preventive monitoring"
+          },
+          {
+            type: "paragraph",
+            text: "Record \"normal\" values (idle and load temperatures, boot time, RAM use) when the system is healthy. Later comparisons reveal slow degradation. Maintenance routines such as software updates, disk cleanup, scheduled backups, dust cleaning and periodic log review help prevent faults (Gookin, 2023; Youree, 2023)."
+          },
+          {
+            type: "subheading",
+            text: "Troubleshooting flow summary"
+          },
+          {
+            type: "code",
+            code: `Problem reported
+       │
+       ▼
+Gather info ──▶ Reproduce ──▶ Check recent changes
+       │
+       ▼
+Does it fail before the OS loads?
+ ├── YES ──▶ Hardware path: power, POST, RAM, CPU, drive
+ └── NO  ──▶ Does it happen in Safe Mode?
+              ├── YES ──▶ Likely hardware or core OS corruption
+              └── NO  ──▶ Likely driver / application / malware
+                           └──▶ Check Event Viewer, Task Manager
+       │
+       ▼
+Apply fix ──▶ Test ──▶ Verify ──▶ Document ──▶ Prevent`
+          },
+          {
+            type: "activity",
+            title: "Activity 5.2: Diagnostic lab",
+            items: [
+              "1. Open Task Manager, Resource Monitor and Event Viewer on a lab PC. Identify the top CPU, memory and disk users, and find the three most recent errors or warnings.",
+              "2. Check drive health with a SMART tool and record the results.",
+              "3. Run Windows Memory Diagnostic, then run sfc /scannow and note the outcome.",
+              "4. Record baseline temperatures at idle and under load.",
+              "5. Write a diagnostic summary: system status, concerns found, and recommended actions."
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // CAPSTONE, REVIEW QUESTIONS, GLOSSARY & REFERENCES (Pages 45–51)
+      // -----------------------------------------------------------------------
+      {
+        id: "capstone-rubric",
+        module: "end",
+        moduleBadge: "Capstone & Rubric",
+        badgeColor: "purple",
+        pageRef: "Pages 45–46",
+        title: "Capstone Activity: Build, break, diagnose & Assessment Rubric",
+        blocks: [
+          {
+            type: "subheading",
+            text: "Capstone: Build, break, diagnose"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Plan. Choose a purpose (office, school, or creative workstation). Select compatible components and justify the choice of motherboard form factor, PSU wattage and cooling.",
+              "Build. Assemble the system using the procedure from Module 3 and configure UEFI per Module 4.",
+              "Protect. Add a surge protector or UPS recommendation, a cleaning schedule and a backup plan.",
+              "Break and diagnose. A partner secretly introduces one fault (e.g., unseat RAM, unplug CPU power, change boot order). You use Module 5's method and tools to find and fix it, documenting every step.",
+              "Present. Submit a build and troubleshooting report with screenshots and photos."
+            ]
+          },
+          {
+            type: "subheading",
+            text: "Rubric"
+          },
+          {
+            type: "table",
+            headers: ["Rubric criterion", "Excellent (4)", "Proficient (3)", "Developing (2)", "Beginning (1)"],
+            rows: [
+              ["Safety and ESD practice", "Consistently safe, anticipates hazards", "Mostly safe", "Occasional lapses", "Unsafe practices"],
+              ["Component selection and compatibility", "All compatible, well justified", "Compatible, some justification", "Minor mismatches", "Major incompatibilities"],
+              ["Assembly quality and cable management", "Clean, secure, airflow-friendly", "Secure, tidy", "Functional but untidy", "Incomplete or unsafe"],
+              ["Configuration (UEFI, drivers)", "Complete and documented", "Complete", "Partial", "Missing"],
+              ["Troubleshooting method and tool use", "Systematic, accurate tool use", "Mostly systematic", "Trial and error", "Unable to isolate fault"],
+              ["Documentation", "Clear, complete, professional", "Clear and mostly complete", "Incomplete", "Minimal"]
+            ]
+          }
+        ]
+      },
+      {
+        id: "review-questions",
+        module: "end",
+        moduleBadge: "Review Questions",
+        badgeColor: "purple",
+        pageRef: "Pages 46–48",
+        title: "Review questions (1–14) — Click to reveal answers",
+        blocks: [
+          {
+            type: "review_qs",
+            items: [
+              {
+                mod: "Module 3",
+                q: "1. Why should you touch the metal case or wear a wrist strap before handling components?",
+                a: "To control electrostatic discharge (ESD) and dissipate static charge safely. A static discharge too small for you to feel (below roughly 3,000 V) can still damage sensitive chips, causing immediate damage or shortening the part's life and leading to intermittent faults."
+              },
+              {
+                mod: "Module 3",
+                q: "2. Name the PSU rail that powers the CPU and graphics card, and give its nominal voltage.",
+                a: "+12 V rail (nominal voltage: 12.0 V)."
+              },
+              {
+                mod: "Module 3",
+                q: "3. A computer shuts off under heavy load, and the CPU temperature reads 97 °C. What are three likely causes?",
+                a: "Dust-clogged heatsink, failed fan, dried thermal paste, or poor cooler contact (also loosely mounted cooler or protective film left on base)."
+              },
+              {
+                mod: "Module 3",
+                q: "4. What is the difference between a surge protector and a UPS?",
+                a: "A surge protector protects against brief over-voltage spikes (such as lightning or grid switching), whereas a UPS (Uninterruptible Power Supply) includes a battery that provides backup power during a blackout so you have minutes to save work and shut down properly (and line-interactive/online models also regulate voltage)."
+              },
+              {
+                mod: "Module 4",
+                q: "5. Which is larger: Micro-ATX or Mini-ITX? Can an ATX board fit in a micro-ATX case?",
+                a: "Micro-ATX (244 x 244 mm) is larger than Mini-ITX (170 x 170 mm). No, an ATX board (305 x 244 mm) cannot fit in a Micro-ATX case; smaller boards fit in larger cases, but not the reverse."
+              },
+              {
+                mod: "Module 4",
+                q: "6. Why are the motherboard's CPU socket and chipset important when choosing a CPU?",
+                a: "The CPU generation must physically and electrically match the socket (e.g., LGA vs. PGA) and be supported by the chipset, which also coordinates data flow between the CPU, memory, storage and peripherals and determines available lanes and features such as overclocking support."
+              },
+              {
+                mod: "Module 4",
+                q: "7. After installing new RAM rated for a higher speed, the system runs it at a lower speed. What setting might you change?",
+                a: "Enable the Memory profile (XMP / EXPO / DOCP) in UEFI/BIOS so the RAM runs at its rated speed instead of a slower default."
+              },
+              {
+                mod: "Module 4",
+                q: "8. A PC shows the wrong date every time it is unplugged. What is the probable cause and fix?",
+                a: "Probable cause: Dead CMOS battery. Fix: Replace the CR2032 (about 3 V) coin cell battery and reconfigure the BIOS."
+              },
+              {
+                mod: "Module 4",
+                q: "9. Describe the minimal boot method.",
+                a: "Remove everything except the PSU, motherboard, CPU with cooler, and one RAM stick (and a graphics card if the CPU has no integrated graphics). Attempt to boot; if it posts, add components back one at a time, testing after each, until the fault returns."
+              },
+              {
+                mod: "Module 5",
+                q: "10. List the steps of the troubleshooting method in order.",
+                a: "1. Identify the problem. 2. Establish a theory of probable cause. 3. Test the theory. 4. Establish a plan of action and identify potential effects. 5. Implement the solution or escalate to a specialist. 6. Verify full system functionality and implement preventive measures. 7. Document findings, actions and outcomes."
+              },
+              {
+                mod: "Module 5",
+                q: "11. A fault appears in BIOS/UEFI, before the operating system loads. Is it more likely hardware or software? Why?",
+                a: "Hardware, because the operating system and applications have not loaded yet; faults occurring at the POST/BIOS stage point toward hardware or firmware."
+              },
+              {
+                mod: "Module 5",
+                q: "12. Which tool would you use to see a timeline of recent errors and warnings, and which to test RAM?",
+                a: "Reliability Monitor (perfmon /rel) or Event Viewer (eventvwr) to see recent errors and warnings; Windows Memory Diagnostic (mdsched) or MemTest86 / MemTest86+ to test RAM."
+              },
+              {
+                mod: "Module 5",
+                q: "13. Task Manager shows memory use at 98% and the system is slow. Give two possible explanations and two actions.",
+                a: "Explanations: Insufficient RAM (paging to disk) or a memory leak. Actions: Close or restart the leaking program, and add more RAM."
+              },
+              {
+                mod: "Module 5",
+                q: "14. Why is documenting a repair important?",
+                a: "Documenting findings, actions, outcomes, and baseline values creates a record of what was tried and fixed, supports preventive maintenance, and allows future technicians to spot recurring issues or slow degradation."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "glossary",
+        module: "end",
+        moduleBadge: "Glossary",
+        badgeColor: "emerald",
+        pageRef: "Pages 48–50",
+        title: "Glossary (Exact Verbatim Definitions)",
+        blocks: [
+          {
+            type: "table",
+            headers: ["Term", "Meaning"],
+            blurCol: 1,
+            rows: [
+              ["AC/DC", "Alternating current (wall power) / direct current (used inside computers)"],
+              ["AIO", "All-in-one liquid cooler: a sealed pump, radiator and block unit"],
+              ["BIOS / UEFI", "Firmware that initializes hardware and starts the OS; UEFI is the modern replacement for legacy BIOS"],
+              ["Chipset", "Set of controllers on the motherboard managing communication between CPU and other components"],
+              ["CMOS", "Small memory area storing firmware settings, powered by the coin cell battery"],
+              ["DIMM", "Dual in-line memory module, the standard desktop RAM stick"],
+              ["ESD", "Electrostatic discharge; sudden flow of static electricity that can damage electronics"],
+              ["Form factor", "Standardized size and layout of a board, case or PSU"],
+              ["NVMe", "Fast storage protocol that runs over PCIe, commonly on M.2 SSDs"],
+              ["PCIe", "PCI Express; high-speed expansion bus for graphics cards, SSDs and other cards"],
+              ["POST", "Power-on self-test; hardware check run by firmware at startup"],
+              ["PSU", "Power supply unit"],
+              ["Rail", "A separate DC voltage output line from the PSU (e.g., +12 V)"],
+              ["S.M.A.R.T.", "Self-monitoring technology built into drives to report health data"],
+              ["Thermal throttling", "Automatic reduction of CPU/GPU speed to prevent overheating"],
+              ["UPS", "Uninterruptible power supply; battery backup device"],
+              ["VRM", "Voltage regulator module; converts power to the voltage required by the CPU"],
+              ["XMP / EXPO", "Memory overclocking profiles stored on RAM modules, enabled in firmware"]
+            ]
+          }
+        ]
+      },
+      {
+        id: "references-notes",
+        module: "end",
+        moduleBadge: "References & Notes",
+        badgeColor: "slate",
+        pageRef: "Pages 50–51",
+        title: "References & Note for instructors",
+        blocks: [
+          {
+            type: "subheading",
+            text: "References"
+          },
+          {
+            type: "numbered",
+            items: [
+              "Gookin, D. (2023). Troubleshooting and maintaining your PC all-in-one. Wiley.",
+              "Besueña, J. S. (2023). Introduction to information technology & computer fundamentals. Unlimited Books Library Services & Publishing.",
+              "Di, F. J. (2023). Fundamentals of Internet of things: For students and professionals. John Wiley & Sons.",
+              "3G E-Learning. (2022). Computer application (2nd ed.). 3G E-Learning.",
+              "Stamp, M. (2022). Information security: Principles and practice (3rd ed.). John Wiley & Sons.",
+              "Youree, R. K. (2023). Software reliability techniques for real-world applications. John Wiley & Sons."
+            ]
+          },
+          {
+            type: "callout",
+            variant: "indigo",
+            title: "Note for instructors",
+            text: "Specific figures in this lesson (voltage tolerances, board dimensions, temperature ranges and beep codes) reflect common industry standards and typical values. Verify exact numbers against the manufacturer's documentation for the equipment used in your class, and consult the listed references for deeper coverage of each topic. — Lesson on Modules 3 to 5: Working Inside a Computer, Motherboard and System Components, and Diagnosing Computer System Problems."
+          }
+        ]
+      }
+    ];
+
+    let activeModFilter = "all";
+
+    function getBadgeClasses(color) {
+      const map = {
+        indigo: "bg-indigo-50 text-indigo-700 border-indigo-200",
+        emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        amber: "bg-amber-50 text-amber-800 border-amber-200",
+        rose: "bg-rose-50 text-rose-700 border-rose-200",
+        purple: "bg-purple-50 text-purple-700 border-purple-200",
+        slate: "bg-slate-100 text-slate-700 border-slate-200"
+      };
+      return map[color] || map.indigo;
+    }
+
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderBlock(block) {
+      if (block.type === "paragraph") {
+        return `<p class="text-sm sm:text-[15px] text-slate-700 leading-relaxed">${escapeHTML(block.text)}</p>`;
+      }
+
+      if (block.type === "subheading") {
+        return `<h3 class="text-sm sm:text-base font-bold text-slate-900 pt-2 flex items-center gap-2">
+          <span class="w-1.5 h-4 rounded-full bg-indigo-500 inline-block shrink-0"></span>
+          <span>${escapeHTML(block.text)}</span>
+        </h3>`;
+      }
+
+      if (block.type === "bullets") {
+        const lis = block.items.map(item => {
+          let contentHtml = escapeHTML(item);
+          if (block.blurParts) {
+            const idx = item.indexOf(".");
+            if (idx > 0 && idx < item.length - 5) {
+              const head = escapeHTML(item.slice(0, idx + 1));
+              const tail = escapeHTML(item.slice(idx + 1));
+              contentHtml = `<strong class="text-slate-900">${head}</strong><span class="recall-target" title="Click to reveal">${tail}</span>`;
+            }
+          } else {
+            const colonIdx = item.indexOf(":");
+            if (colonIdx > 0 && colonIdx < 48) {
+              const head = escapeHTML(item.slice(0, colonIdx + 1));
+              const tail = escapeHTML(item.slice(colonIdx + 1));
+              contentHtml = `<strong class="text-slate-900">${head}</strong><span class="recall-target" title="Click to reveal">${tail}</span>`;
+            }
+          }
+          return `<li class="flex items-start gap-2.5 text-sm sm:text-[15px] text-slate-700 leading-relaxed">
+            <span class="mt-2 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+            <span>${contentHtml}</span>
+          </li>`;
+        }).join("");
+        return `<ul class="space-y-2.5 pl-1">${lis}</ul>`;
+      }
+
+      if (block.type === "numbered") {
+        const lis = block.items.map((item, i) => {
+          const colonIdx = item.indexOf(":");
+          let contentHtml = escapeHTML(item);
+          if (colonIdx > 0 && colonIdx < 45) {
+            contentHtml = `<strong class="text-slate-900">${escapeHTML(item.slice(0, colonIdx + 1))}</strong><span class="recall-target" title="Click to reveal">${escapeHTML(item.slice(colonIdx + 1))}</span>`;
+          }
+          return `<li class="flex items-start gap-3 text-sm sm:text-[15px] text-slate-700 leading-relaxed">
+            <span class="mt-0.5 w-6 h-6 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">${i + 1}</span>
+            <span>${contentHtml}</span>
+          </li>`;
+        }).join("");
+        return `<ol class="space-y-2.5">${lis}</ol>`;
+      }
+
+      if (block.type === "table") {
+        const ths = block.headers.map(h => `<th class="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100/90 border-b border-slate-200">${escapeHTML(h)}</th>`).join("");
+        const trs = block.rows.map(row => {
+          const tds = row.map((cell, cIdx) => {
+            const isBlur = block.blurCol === cIdx;
+            const inner = isBlur
+              ? `<span class="recall-target" title="Click to reveal exact definition">${escapeHTML(cell)}</span>`
+              : escapeHTML(cell);
+            return `<td class="px-3.5 py-2.5 text-xs sm:text-sm text-slate-700 border-b border-slate-100 align-top leading-relaxed ${cIdx === 0 ? "font-semibold text-slate-900" : ""}">${inner}</td>`;
+          }).join("");
+          return `<tr class="hover:bg-slate-50/80 transition">${tds}</tr>`;
+        }).join("");
+
+        return `<div class="overflow-x-auto rounded-2xl border border-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 bg-white">
+            <thead><tr>${ths}</tr></thead>
+            <tbody class="divide-y divide-slate-100">${trs}</tbody>
+          </table>
+        </div>`;
+      }
+
+      if (block.type === "callout") {
+        const styles = {
+          indigo: "bg-indigo-50/70 border-indigo-200 text-indigo-950",
+          amber: "bg-amber-50/80 border-amber-200 text-amber-950",
+          rose: "bg-rose-50/80 border-rose-200 text-rose-950"
+        };
+        const titleColors = {
+          indigo: "text-indigo-800",
+          amber: "text-amber-800",
+          rose: "text-rose-800"
+        };
+        return `<div class="rounded-2xl border p-4 ${styles[block.variant] || styles.indigo}">
+          <p class="text-xs sm:text-sm font-extrabold uppercase tracking-wide mb-1 ${titleColors[block.variant] || titleColors.indigo}">${escapeHTML(block.title)}</p>
+          <p class="text-xs sm:text-sm leading-relaxed">${escapeHTML(block.text)}</p>
+        </div>`;
+      }
+
+      if (block.type === "twocol") {
+        const leftLis = block.leftItems.map(i => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700"><span class="text-emerald-600 font-bold">•</span><span>${escapeHTML(i)}</span></li>`).join("");
+        const rightLis = block.rightItems.map(i => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700"><span class="text-indigo-600 font-bold">•</span><span>${escapeHTML(i)}</span></li>`).join("");
+        return `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-4">
+            <h4 class="text-sm font-bold text-emerald-900 mb-2">${escapeHTML(block.leftTitle)}</h4>
+            <ul class="space-y-1.5">${leftLis}</ul>
+          </div>
+          <div class="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-4">
+            <h4 class="text-sm font-bold text-indigo-900 mb-2">${escapeHTML(block.rightTitle)}</h4>
+            <ul class="space-y-1.5">${rightLis}</ul>
+          </div>
+        </div>`;
+      }
+
+      if (block.type === "code") {
+        return `<div class="rounded-2xl bg-slate-900 text-slate-100 p-4 overflow-x-auto border border-slate-800">
+          <pre class="font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre">${escapeHTML(block.code)}</pre>
+        </div>`;
+      }
+
+      if (block.type === "activity") {
+        const items = block.items.map(i => `<p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${escapeHTML(i)}</p>`).join("");
+        const foot = block.footer ? `<p class="mt-2 pt-2 border-t border-purple-200/80 text-xs font-semibold text-purple-900">${escapeHTML(block.footer)}</p>` : "";
+        return `<div class="rounded-2xl border border-purple-200 bg-purple-50/40 p-4 sm:p-5 space-y-1.5">
+          <h4 class="text-sm font-bold text-purple-950 mb-1">${escapeHTML(block.title)}</h4>
+          ${items}
+          ${foot}
+        </div>`;
+      }
+
+      if (block.type === "review_qs") {
+        const qs = block.items.map(item => `
+          <div class="rounded-2xl border border-slate-200 bg-slate-50/60 overflow-hidden">
+            <button type="button" class="toggle-answer-btn w-full text-left p-4 flex items-start justify-between gap-3 hover:bg-white transition">
+              <div class="space-y-1">
+                <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">${escapeHTML(item.mod)}</span>
+                <p class="text-sm sm:text-[15px] font-bold text-slate-900">${escapeHTML(item.q)}</p>
+              </div>
+              <span class="shrink-0 px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs font-semibold">Show answer</span>
+            </button>
+            <div class="review-answer hidden px-4 pb-4 pt-2.5 bg-emerald-50/70 border-t border-emerald-200/80 text-xs sm:text-sm text-emerald-950 leading-relaxed">
+              <strong class="text-emerald-800">Answer:</strong> <span class="recall-target" title="Click to reveal">${escapeHTML(item.a)}</span>
+            </div>
+          </div>
+        `).join("");
+        return `<div class="space-y-3">${qs}</div>`;
+      }
+
+      return "";
+    }
+
+    function renderAllContent() {
+      const root = document.getElementById("verbatimContentRoot");
+      root.innerHTML = STUDY_SECTIONS.map(sec => {
+        const blocksHtml = sec.blocks.map(renderBlock).join("\n");
+        return `
+          <article id="${sec.id}" data-module="${sec.module}" class="study-card rounded-3xl bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-7 space-y-5">
+            <div class="pb-3 border-b border-slate-100 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold border ${getBadgeClasses(sec.badgeColor)}">${escapeHTML(sec.moduleBadge)}</span>
+                <span class="text-xs font-mono text-slate-400">${escapeHTML(sec.pageRef)}</span>
+              </div>
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">${escapeHTML(sec.title)}</h2>
+            </div>
+
+            <div class="space-y-4">
+              ${blocksHtml}
+            </div>
+          </article>`;
+      }).join("\n");
+    }
+
+    // =========================================================================
+    // INTERACTIONS: BLUR RECALL, MODULE TABS, LIVE SEARCH, REVIEW Q ANSWERS
+    // =========================================================================
+    document.addEventListener("click", (e) => {
+      // Reveal individual blurred recall target
+      const recallEl = e.target.closest(".recall-target");
+      if (recallEl && document.body.classList.contains("recall-mode")) {
+        recallEl.classList.toggle("revealed");
+        return;
+      }
+
+      // Toggle Review Question Answer
+      const ansBtn = e.target.closest(".toggle-answer-btn");
+      if (ansBtn) {
+        const ansBox = ansBtn.nextElementSibling;
+        const badge = ansBtn.querySelector("span:last-child");
+        const isHidden = ansBox.classList.contains("hidden");
+        ansBox.classList.toggle("hidden");
+        badge.textContent = isHidden ? "Hide answer" : "Show answer";
+        badge.classList.toggle("bg-indigo-600", !isHidden);
+        badge.classList.toggle("bg-slate-700", isHidden);
+      }
+    });
+
+    // Blur Recall Toggle
+    document.getElementById("toggleRecallBtn").addEventListener("click", function () {
+      document.body.classList.toggle("recall-mode");
+      const active = document.body.classList.contains("recall-mode");
+      document.querySelectorAll(".recall-target").forEach(el => el.classList.remove("revealed"));
+      this.classList.toggle("bg-amber-100", active);
+      this.classList.toggle("border-amber-400", active);
+      this.classList.toggle("text-amber-900", active);
+      document.getElementById("recallNotice").classList.toggle("hidden", !active);
+    });
+
+    // Reveal All button inside notice
+    document.getElementById("revealAllBtn").addEventListener("click", () => {
+      document.querySelectorAll(".recall-target").forEach(el => el.classList.add("revealed"));
+    });
+
+    // Module Filter Tabs
+    document.querySelectorAll(".mod-filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeModFilter = btn.getAttribute("data-mod-filter");
+        document.querySelectorAll(".mod-filter-btn").forEach(b => {
+          b.classList.remove("bg-indigo-600", "text-white");
+          b.classList.add("bg-slate-100", "text-slate-700");
+        });
+        btn.classList.remove("bg-slate-100", "text-slate-700");
+        btn.classList.add("bg-indigo-600", "text-white");
+        applyFiltersAndSearch();
+      });
+    });
+
+    // Live Search & Highlighting
+    const searchInput = document.getElementById("searchInput");
+    const searchCount = document.getElementById("searchCount");
+
+    function clearHighlights() {
+      document.querySelectorAll("mark.search-hit").forEach(mark => {
+        const parent = mark.parentNode;
+        parent.replaceChild(document.createTextNode(mark.textContent), mark);
+        parent.normalize();
+      });
+    }
+
+    function highlightTextNodes(el, query) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      const nodes = [];
+      let n;
+      while ((n = walker.nextNode())) nodes.push(n);
+      let hits = 0;
+      const lowerQ = query.toLowerCase();
+
+      nodes.forEach(textNode => {
+        const val = textNode.nodeValue;
+        const idx = val.toLowerCase().indexOf(lowerQ);
+        if (idx !== -1) {
+          const span = document.createElement("span");
+          let last = 0;
+          let pos = idx;
+          while (pos !== -1) {
+            span.appendChild(document.createTextNode(val.slice(last, pos)));
+            const mark = document.createElement("mark");
+            mark.className = "search-hit";
+            mark.textContent = val.slice(pos, pos + query.length);
+            span.appendChild(mark);
+            hits++;
+            last = pos + query.length;
+            pos = val.toLowerCase().indexOf(lowerQ, last);
+          }
+          span.appendChild(document.createTextNode(val.slice(last)));
+          textNode.parentNode.replaceChild(span, textNode);
+        }
+      });
+      return hits;
+    }
+
+    function applyFiltersAndSearch() {
+      clearHighlights();
+      const q = searchInput.value.trim();
+      let visibleCards = 0;
+      let totalHits = 0;
+
+      document.querySelectorAll(".study-card").forEach(card => {
+        const mod = card.getAttribute("data-module");
+        const modMatch = activeModFilter === "all" || mod === activeModFilter;
+        const textMatch = !q || card.textContent.toLowerCase().includes(q.toLowerCase());
+
+        if (modMatch && textMatch) {
+          card.classList.remove("hidden");
+          visibleCards++;
+          if (q) {
+            totalHits += highlightTextNodes(card, q);
+          }
+        } else {
+          card.classList.add("hidden");
+        }
+      });
+
+      if (q) {
+        searchCount.textContent = `${totalHits}`;
+        searchCount.classList.remove("hidden");
+      } else {
+        searchCount.classList.add("hidden");
+      }
+
+      document.getElementById("noSearchResults").classList.toggle("hidden", visibleCards > 0);
+    }
+
+    searchInput.addEventListener("input", applyFiltersAndSearch);
+    document.getElementById("clearSearchBtn").addEventListener("click", () => {
+      searchInput.value = "";
+      activeModFilter = "all";
+      document.querySelector('.mod-filter-btn[data-mod-filter="all"]').click();
+    });
+
+    // Initialize
+    renderAllContent();
+  </script>
+</body>
+</html>

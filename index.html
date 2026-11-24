@@ -1,0 +1,99 @@
+<!-- ... existing code ... -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reviewers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+<!-- ... existing code ... -->
+  <main class="max-w-xl mx-auto px-4 py-12 sm:py-16">
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900 mb-6">Reviewers</h1>
+
+    <!-- Year Tabs -->
+    <div id="yearTabs" class="flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Year levels">
+      <button type="button" role="tab" data-year="1st year" aria-selected="false" class="year-btn px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">1st year</button>
+      <button type="button" role="tab" data-year="2nd Year" aria-selected="false" class="year-btn px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">2nd Year</button>
+      <button type="button" role="tab" data-year="3rd year" aria-selected="false" class="year-btn px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">3rd year</button>
+      <button type="button" role="tab" data-year="4th year" aria-selected="true" class="year-btn px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-900 bg-slate-900 text-white transition">4th year</button>
+    </div>
+
+    <!-- Subject / Exam List -->
+    <section id="menuContent" aria-live="polite" class="space-y-4"></section>
+  </main>
+
+  <script>
+    const MENU_DATA = {
+      "1st year": [],
+      "2nd Year": [],
+      "3rd year": [],
+      "4th year": [
+        {
+          subject: "it23",
+          exams: [
+            { label: "1st Exam", file: "1st exam.html", note: "" },
+            { label: "2nd exam", file: "4y_it23_2nd_exam_module_3_5.html", note: "Modules 3–5" }
+          ]
+        }
+      ]
+    };
+
+    let selectedYear = "4th year";
+
+    function renderMenu() {
+      document.querySelectorAll(".year-btn").forEach((btn) => {
+        const isSelected = btn.dataset.year === selectedYear;
+        btn.setAttribute("aria-selected", String(isSelected));
+        btn.className = isSelected
+          ? "year-btn px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-900 bg-slate-900 text-white transition"
+          : "year-btn px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition";
+      });
+
+      const container = document.getElementById("menuContent");
+      const subjects = MENU_DATA[selectedYear] || [];
+
+      if (!subjects.length) {
+        container.innerHTML = `
+          <div class="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+            No reviewers for ${selectedYear}.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = subjects
+        .map(
+          (item) => `
+          <div class="rounded-xl border border-slate-200 bg-white p-5">
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Subject</div>
+            <h2 class="text-lg font-semibold text-slate-900 mb-4">${item.subject}</h2>
+            <ul class="space-y-2.5">
+              ${item.exams
+                .map(
+                  (exam) => `
+                <li>
+                  <a href="${exam.file}" class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-4 py-3 hover:border-slate-900 hover:bg-slate-50 transition">
+                    <div>
+                      <div class="text-sm font-medium text-slate-900">${exam.label}</div>
+                      <div class="text-xs text-slate-500">${exam.file}${exam.note ? ` · ${exam.note}` : ""}</div>
+                    </div>
+                    <span class="text-sm text-slate-400" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              `
+                )
+                .join("")}
+            </ul>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    document.getElementById("yearTabs").addEventListener("click", (e) => {
+      const btn = e.target.closest(".year-btn");
+      if (!btn) return;
+      selectedYear = btn.dataset.year;
+      renderMenu();
+    });
+
+    renderMenu();
+  </script>
+</body>
+</html>
